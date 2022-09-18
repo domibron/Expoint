@@ -40,7 +40,6 @@ public class Luancher : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu("title");
         Debug.Log("Joined Lobby");
-        PhotonNetwork.NickName = "player " + Random.Range(0, 100).ToString("0000");
     }
 
     public void CreateRoom()
