@@ -1,6 +1,7 @@
 # Multiplayer Game
 
-currently not released
+> Alpha
+> early access granted to select few
 
 
 
