@@ -98,9 +98,14 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
-            items[itemIndex].Use();
+            items[itemIndex].UseMouse0();
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            items[itemIndex].UseRKey();
         }
 
         if (transform.position.y < -20f) // dies if below y value in the world
@@ -163,7 +168,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
         Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 
-        moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+        if (grounded)
+        {
+            moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+        }
+        else
+        {
+            moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed / 2f : walkSpeed / 2f), ref smoothMoveVelocity, smoothTime);
+            // want to half the speed when in the air to stop  mad air strafing but it should be a thing tho, that's why I am not removeing it but reducing it.
+        }
     }
 
     public void SetGroundedState(bool _grounded)

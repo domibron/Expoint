@@ -42,6 +42,8 @@ MonoBehaviour:
   - RPC_TakeDamage
   - RPC_Shoot
   - RPC_GetKill
+  - RMP_TracerDraw
+  - RPC_DrawTracer
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

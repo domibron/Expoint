@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using System.Net;
 
 public class SingleShotGun : Gun
 {
@@ -9,18 +10,37 @@ public class SingleShotGun : Gun
 
     PhotonView PV;
 
+    //fire Rate stuff
+    float TimeUntilNextFire;
+
+
+    //..
+
     private void Awake()
     {
         PV = GetComponent<PhotonView>();
     }
 
-    public override void Use()
+    public override void UseRKey()
     {
-        Shoot();
+        throw new System.NotImplementedException();
+    }
+
+    public override void UseMouse0()
+    {
+           Shoot();
     }
 
     void Shoot()
     {
+        if (Time.time < TimeUntilNextFire) // fire rate
+        {
+            Debug.Log("Failed " + Time.time + " : ttnf " + TimeUntilNextFire);
+            return;
+        }
+
+        TimeUntilNextFire = Time.time + 1f / ((GunInfo)itemInfo).fireRate;
+
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
         ray.origin = cam.transform.position;
         if (Physics.Raycast(ray, out RaycastHit hit))

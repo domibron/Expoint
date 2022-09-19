@@ -14,3 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Rifle
   damage: 50
+  fireRate: 10
+  reloadSpeed: 3
+  maxAmmoInClip: 30
+  maxAmmoInReserve: 270

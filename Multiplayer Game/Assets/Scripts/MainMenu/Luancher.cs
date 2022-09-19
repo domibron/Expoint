@@ -28,6 +28,9 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     void Start()
     {
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+
         Debug.Log("connecting to Lobby");
         PhotonNetwork.ConnectUsingSettings();
     }

@@ -6,4 +6,8 @@ using UnityEngine;
 public class GunInfo : ItemInfo
 {
     public float damage;
+    public float fireRate;
+    public float reloadSpeed;
+    public int maxAmmoInClip;
+    public int maxAmmoInReserve;
 }

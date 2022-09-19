@@ -14,3 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Pistol
   damage: 25
+  fireRate: 4
+  reloadSpeed: 1
+  maxAmmoInClip: 0
+  maxAmmoInReserve: 0

@@ -7,23 +7,26 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviourPunCallbacks
 {
-    [SerializeField] CanvasGroup canvasGroup;
+    [SerializeField] GameObject pauseMenu;
+
+    bool isPauseMenuActive;
 
     private void Awake()
     {
-        canvasGroup.alpha = 0;
+        pauseMenu.SetActive(false);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && canvasGroup.alpha == 0)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            canvasGroup.alpha = 1;
+            isPauseMenuActive = !isPauseMenuActive; 
         }
-        else if (Input.GetKeyDown(KeyCode.Escape) && canvasGroup.alpha == 1)
-        {
-            canvasGroup.alpha = 0;
-        }
+
+        pauseMenu.SetActive(isPauseMenuActive);
+
+        Cursor.lockState = (isPauseMenuActive ? CursorLockMode.Confined : CursorLockMode.Locked) ;
+        Cursor.visible = isPauseMenuActive;
     }
 
     public void leaveRoom()
