@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 {
     [SerializeField] Image healthbarImage;
     [SerializeField] GameObject ui;
+    [SerializeField] GameObject pauseMenu;
 
     [SerializeField] GameObject cameraHolder;
 
@@ -53,6 +54,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             Destroy(GetComponentInChildren<Camera>().gameObject);
             Destroy(rb);
             Destroy(ui);
+            Destroy(pauseMenu);
         }
     }
 

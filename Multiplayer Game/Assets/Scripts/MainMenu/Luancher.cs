@@ -4,9 +4,12 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
+using UnityEditor;
 
 public class Luancher : MonoBehaviourPunCallbacks
 {
+    public List<RoomInfo> Rooms = new List<RoomInfo>();
+
     public static Luancher Instance;
 
     [SerializeField] TMP_InputField roomNameInputField;
@@ -79,7 +82,7 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        errorText.tag = "Room Creation Failed: " + message;
+        errorText.text = "Room Creation Failed: " + message;
         MenuManager.Instance.OpenMenu("error");
     }
 
@@ -106,23 +109,73 @@ public class Luancher : MonoBehaviourPunCallbacks
         MenuManager.Instance.OpenMenu("title");
     }
 
-    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    public override void OnRoomListUpdate(List<RoomInfo> p_list)
+    {
+        base.OnRoomListUpdate(p_list);
+
+        foreach (var room in p_list)
+        {
+            if (room.RemovedFromList)
+            {
+                Rooms.Remove(room);
+                continue;
+            }
+
+            if (room.IsVisible == false)
+            {
+                Rooms.Remove(room);
+                continue;
+            }
+
+            if (room.IsOpen == false)
+            {
+                Rooms.Remove(room);
+                continue;
+            }
+
+            Rooms.Add(room);
+        }
+
+        //foreach (Transform trans in roomListContent)
+        //{
+        //    Destroy(trans.gameObject);
+        //}
+
+        //for (int i = 0; i < roomList.Count; i++)
+        //{
+        //    if (roomList[i].RemovedFromList)
+        //        continue;
+        //    else
+        //        Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
+        //}
+
+        ClearRoomList();
+
+        foreach (var room in Rooms)
+        {
+            Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(room);
+        }
+    }
+
+    public void ClearRoomList()
     {
         foreach (Transform trans in roomListContent)
         {
             Destroy(trans.gameObject);
-        }
-
-        for (int i = 0; i < roomList.Count; i++)
-        {
-            if (roomList[i].RemovedFromList)
-                continue;
-            Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(roomList[i]);
         }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+    }
+
+
+
+
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
