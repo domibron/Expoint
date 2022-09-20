@@ -137,7 +137,7 @@ public class Rifle : Gun
 
         trailMove.startPos = start;
         trailMove.goToPos = end;
-        trailMove.Speed = 1f;
+        trailMove.Speed = 10f;
 
         Destroy(trail, 2f);
 
