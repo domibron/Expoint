@@ -5,6 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 {
@@ -34,6 +35,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     float currentHealth = maxHealth;
 
     PlayerManager playerManager;
+
+    RaycastHit slopeHit;
 
     void Awake()
     {
@@ -115,12 +118,41 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     }
 
+    void FixedUpdate()
+    {
+        if (!PV.IsMine) return;
+
+        rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
+    }
+
+    private bool IsOnSlope()
+    {
+        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, gameObject.GetComponent<CapsuleCollider>().height / 2f)) // might need to make this value scale with player later
+        {
+            if (slopeHit.normal != Vector3.up)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    }
+
     void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+        if (Input.GetKeyDown(KeyCode.Space) && grounded && !IsOnSlope()) // other than onslope, this is defualt jumping.
         {
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce);
         }
+        //else if (Input.GetKeyDown(KeyCode.Space) && grounded && IsOnSlope()) // inside is temp. Will rework or change
+        //{
+        //    rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
+        //    rb.AddForce(slopeHit.normal * jumpForce); // will jump the up vector of the slope.
+        //}
     }
 
     void EquipItem(int _index)
@@ -146,7 +178,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
     }
 
-    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) // this player properties has changed.
     {
         if (changedProps.ContainsKey("ItemIndex") && !PV.IsMine && targetPlayer == PV.Owner)
         {
@@ -164,17 +196,59 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
     }
 
-    void Move()
+    void HandleGravity()
     {
-        Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+        float currentVerticalSpeed = rb.velocity.y;
 
         if (grounded)
         {
-            moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+            if (currentVerticalSpeed < 0f)
+                currentVerticalSpeed = 0f;
+            rb.velocity = new Vector3(rb.velocity.x, currentVerticalSpeed, rb.velocity.z);
+        }
+        //else if (!grounded)
+        //{
+        //    currentVerticalSpeed -= 1f * Time.deltaTime;
+        //}
+
+        //rb.velocity = new Vector3(rb.velocity.x, currentVerticalSpeed, rb.velocity.z);
+    }
+
+    void Move()
+    {
+        rb.velocity = new Vector3(0, rb.velocity.y, 0);
+
+        //HandleGravity(); // MOVE TO FIXED UPDATE - posibly??
+
+        Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+
+        float horizontalMovement = Input.GetAxisRaw("Horizontal");
+        float verticalMovement = Input.GetAxisRaw("Vertical");
+
+        print(rb.velocity.magnitude + "vm | v" + rb.velocity);
+
+        if (grounded)
+        {
+            if (IsOnSlope())
+            {
+                Vector3 moveDir2 = (Vector3.back * verticalMovement + Vector3.left * horizontalMovement).normalized;
+                Vector3 slopeMoveDir = Vector3.ProjectOnPlane(moveDir2, slopeHit.normal);
+
+                print(moveDir);
+                print(slopeMoveDir);
+
+                moveAmount = Vector3.SmoothDamp(moveAmount, -slopeMoveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+            }
+            else
+            {
+                moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
+            }
+
+            // moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
         }
         else
         {
-            moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed / 2f : walkSpeed / 2f), ref smoothMoveVelocity, smoothTime);
+            moveAmount = Vector3.SmoothDamp(moveAmount, moveDir * (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed / 1.5f : walkSpeed / 1.5f), ref smoothMoveVelocity, smoothTime);
             // want to half the speed when in the air to stop  mad air strafing but it should be a thing tho, that's why I am not removeing it but reducing it.
         }
     }
@@ -182,13 +256,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     public void SetGroundedState(bool _grounded)
     {
         grounded = _grounded;
-    }
-
-    void FixedUpdate()
-    {
-        if (!PV.IsMine) return;
-
-        rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.fixedDeltaTime);
     }
 
     public void TakeDamage(float damage)
@@ -210,7 +277,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
     }
 
-    void Die()
+    void Die() // function to call to kill player
     {
         playerManager.Die();
     }

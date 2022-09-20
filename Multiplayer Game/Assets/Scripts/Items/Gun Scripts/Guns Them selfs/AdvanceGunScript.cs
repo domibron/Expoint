@@ -5,7 +5,7 @@ using Photon.Pun;
 using TMPro;
 using System.Net;
 
-public class Rifle : Gun
+public class AdvanceGunScript : Gun
 {
     [SerializeField] Camera cam;
     [SerializeField] TMP_Text ammoText;
@@ -88,7 +88,9 @@ public class Rifle : Gun
 
     void Shoot()
     {
-        if (Time.time < TimeUntilNextFire || isReloading) // fire rate
+        StopCoroutine(Reload());
+
+        if (Time.time < TimeUntilNextFire || isReloading) // fire rate.
         {
             return;
         }
@@ -118,7 +120,7 @@ public class Rifle : Gun
     }
 
     [PunRPC]
-    void RPC_Shoot(Vector3 hitPosition, Vector3 hitNormal)
+    void RPC_Shoot(Vector3 hitPosition, Vector3 hitNormal) // universal function for all clients.
     {
         Collider[] colliders = Physics.OverlapSphere(hitPosition, 0.3f);
         if (colliders.Length != 0)
@@ -130,16 +132,20 @@ public class Rifle : Gun
     }
 
     [PunRPC]
-    void RPC_DrawTracer(Vector3 start, Vector3 end)
+    void RPC_DrawTracer(Vector3 start, Vector3 end) // universal function for all clients.
     {
-        GameObject trail = Instantiate(tracerPrefab, start, Quaternion.identity);
-        TrailMove trailMove = trail.GetComponent<TrailMove>();
+        GameObject trail = Instantiate(tracerPrefab, start, Quaternion.identity); // creates the trail object at start pos.
+        TrailMove trailMove = trail.GetComponent<TrailMove>(); // grabs the component so i don't need to call get component.
 
-        trailMove.startPos = start;
-        trailMove.goToPos = end;
-        trailMove.Speed = 10f;
+        float distance = Vector3.Distance(end, start); // Gets the distance between the two points for speed calc.
+        float speed = 40f; // speed the projectile should travel at. Change this value.
+        float trailSpeed = speed / distance; // trail speed it needs to go at from speed. done as vector3.Lerp will make far trails faster and closer ones slower.
 
-        Destroy(trail, 2f);
+        trailMove.startPos = start; // starting pos.
+        trailMove.goToPos = end; // target pos.
+        trailMove.Speed = trailSpeed; // for 100f make a varible base distance - put in trail script.
+
+        Destroy(trail, 1f); // keeps it for a second.
 
         
     }
