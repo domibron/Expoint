@@ -16,5 +16,5 @@ MonoBehaviour:
   damage: 25
   fireRate: 4
   reloadSpeed: 1
-  maxAmmoInClip: 0
-  maxAmmoInReserve: 0
+  maxAmmoInClip: 9
+  maxAmmoInReserve: 81

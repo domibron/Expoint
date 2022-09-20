@@ -225,8 +225,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         float horizontalMovement = Input.GetAxisRaw("Horizontal");
         float verticalMovement = Input.GetAxisRaw("Vertical");
 
-        print(rb.velocity.magnitude + "vm | v" + rb.velocity);
-
         if (grounded)
         {
             if (IsOnSlope())

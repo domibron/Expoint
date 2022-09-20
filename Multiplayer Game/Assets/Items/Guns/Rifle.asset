@@ -15,6 +15,6 @@ MonoBehaviour:
   itemName: Rifle
   damage: 1
   fireRate: 10
-  reloadSpeed: 3
+  reloadSpeed: 2
   maxAmmoInClip: 30
   maxAmmoInReserve: 270

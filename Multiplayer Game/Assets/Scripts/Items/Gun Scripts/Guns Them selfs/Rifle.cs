@@ -5,10 +5,12 @@ using Photon.Pun;
 using TMPro;
 using System.Net;
 
-public class AdvanceGunScript : Gun
+public class Rifle : Gun
 {
     [SerializeField] Camera cam;
     [SerializeField] TMP_Text ammoText;
+
+    [SerializeField, Range(1, 1000)] float SPEED;
 
     PhotonView PV;
 
@@ -18,6 +20,8 @@ public class AdvanceGunScript : Gun
     float TimeUntilNextFire;
 
     bool isReloading;
+
+    float reloadTimeLeft;
 
     private void Awake()
     {
@@ -32,15 +36,26 @@ public class AdvanceGunScript : Gun
 
     public override void UseRKey()
     {
-        StartCoroutine(Reload());
+        if (currentAmmo < ((GunInfo)itemInfo).maxAmmoInClip)
+        {
+            StartCoroutine(Reload());
+        }
     }
 
 
     private void Update()
     {
-        if (((GunInfo)itemInfo).name == "Rifle")
+        if (itemGameObject.activeSelf == false)
+            return;
+
+        if (!isReloading)
         {
             ammoText.text = $"{currentAmmo} / {((GunInfo)itemInfo).maxAmmoInClip}\n   {currentReserveAmmo}";
+        }
+        else
+        {
+            reloadTimeLeft -= Time.deltaTime;
+            ammoText.text = $"<mspace=0.75em>{(Mathf.Round(reloadTimeLeft * 100f) / 100f).ToString("N2")}</mspace>\n## / {((GunInfo)itemInfo).maxAmmoInClip}\n   {currentReserveAmmo}";
         }
     }
 
@@ -63,6 +78,8 @@ public class AdvanceGunScript : Gun
     IEnumerator Reload()
     {
         isReloading = true;
+
+        reloadTimeLeft = ((GunInfo)itemInfo).reloadSpeed;
 
         yield return new WaitForSeconds(((GunInfo)itemInfo).reloadSpeed);
 
@@ -138,7 +155,7 @@ public class AdvanceGunScript : Gun
         TrailMove trailMove = trail.GetComponent<TrailMove>(); // grabs the component so i don't need to call get component.
 
         float distance = Vector3.Distance(end, start); // Gets the distance between the two points for speed calc.
-        float speed = 40f; // speed the projectile should travel at. Change this value.
+        float speed = SPEED; // speed the projectile should travel at. Change this value.
         float trailSpeed = speed / distance; // trail speed it needs to go at from speed. done as vector3.Lerp will make far trails faster and closer ones slower.
 
         trailMove.startPos = start; // starting pos.
