@@ -5,6 +5,7 @@ using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class Luancher : MonoBehaviourPunCallbacks
 {
@@ -13,8 +14,11 @@ public class Luancher : MonoBehaviourPunCallbacks
     public static Luancher Instance;
 
     [SerializeField] TMP_InputField roomNameInputField;
+    [SerializeField] Slider maxPlayersSlider;
+    [SerializeField] TMP_Text maxPlayerSliderText;
     [SerializeField] TMP_Text errorText;
     [SerializeField] TMP_Text roomNameText;
+    [SerializeField] TMP_Text playersOutOfMaxPlayersText;
     [SerializeField] Transform roomListContent;
     [SerializeField] Transform playerListContent;
     [SerializeField] GameObject roomListItemPrefab;
@@ -33,6 +37,15 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         Debug.Log("connecting to Lobby");
         PhotonNetwork.ConnectUsingSettings();
+    }
+
+    void Update()
+    {
+        if (PhotonNetwork.InRoom)
+            playersOutOfMaxPlayersText.text = $"{PhotonNetwork.CurrentRoom.PlayerCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
+
+        if (MenuManager.Instance.ReturnIsOpenMenuName("create room"))
+            maxPlayerSliderText.text = $"Maxplayers:\n{maxPlayersSlider.value} / {maxPlayersSlider.maxValue}";
     }
 
     public override void OnConnectedToMaster()
@@ -54,7 +67,11 @@ public class Luancher : MonoBehaviourPunCallbacks
         {
             return;
         }
-        PhotonNetwork.CreateRoom(roomNameInputField.text);
+
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.MaxPlayers = (byte)maxPlayersSlider.value;
+
+        PhotonNetwork.CreateRoom(roomNameInputField.text, roomOptions);
         MenuManager.Instance.OpenMenu("loading");
     }
 
@@ -62,6 +79,8 @@ public class Luancher : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu("room");
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
+
+        playersOutOfMaxPlayersText.text = $"{PhotonNetwork.CurrentRoom.PlayerCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
 
         Player[] players = PhotonNetwork.PlayerList;
 
@@ -118,6 +137,14 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         foreach (var room in p_list)
         {
+            for (int i = 0; i < p_list.Count; i++)
+            {
+                if (room.Name == p_list[i].Name)
+                {
+                    Rooms.Remove(room);
+                }
+            }
+
             if (room.RemovedFromList)
             {
                 Rooms.Remove(room);

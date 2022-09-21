@@ -217,7 +217,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
         rb.velocity = new Vector3(0, rb.velocity.y, 0);
 
-        //HandleGravity(); // MOVE TO FIXED UPDATE - posibly??
+        HandleGravity(); // MOVE TO FIXED UPDATE - posibly??
 
         Vector3 moveDir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
 

@@ -13,6 +13,18 @@ public class MenuManager : MonoBehaviour
         Instance = this;
     }
 
+    public bool ReturnIsOpenMenuName(string name)
+    {
+        foreach (Menu _menu in menus)
+        {
+            if (_menu.menuName == name && _menu.gameObject.activeSelf)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void OpenMenu(string menuName)
     {
         for (int i = 0; i < menus.Length; i++)
