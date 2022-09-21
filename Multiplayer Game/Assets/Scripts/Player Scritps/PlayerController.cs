@@ -145,7 +145,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
         if (Input.GetKeyDown(KeyCode.Space) && grounded && !IsOnSlope()) // other than onslope, this is defualt jumping.
         {
-            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce);
         }
         //else if (Input.GetKeyDown(KeyCode.Space) && grounded && IsOnSlope()) // inside is temp. Will rework or change

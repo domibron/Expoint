@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rifle
   m_EditorClassIdentifier: 
   itemName: Rifle
-  damage: 1
+  damage: 36
   fireRate: 10
   reloadSpeed: 2
   maxAmmoInClip: 30

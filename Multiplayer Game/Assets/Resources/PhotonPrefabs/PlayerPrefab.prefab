@@ -263,7 +263,7 @@ MonoBehaviour:
   tracerPrefab: {fileID: 4869896325537101615, guid: 58ad8498f5a283d4eb25c1b0088563eb, type: 3}
   cam: {fileID: 45250762690307004}
   ammoText: {fileID: 679204633203539990}
-  SPEED: 352
+  SPEED: 175
 --- !u!114 &3292291324563773934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -612,7 +612,7 @@ MonoBehaviour:
   tracerPrefab: {fileID: 4869896325537101615, guid: 58ad8498f5a283d4eb25c1b0088563eb, type: 3}
   cam: {fileID: 45250762690307004}
   ammoText: {fileID: 679204633203539990}
-  SPEED: 352
+  SPEED: 175
 --- !u!114 &86135414148375849
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1433,7 +1433,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5466003983980032765}
-  m_Material: {fileID: 13400000, guid: 29424ab8a9c185c4bbff50f2fa06a36a, type: 2}
+  m_Material: {fileID: 13400000, guid: e514c3d2faabd5440afa2d49e380f758, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
@@ -1495,9 +1495,9 @@ MonoBehaviour:
   ui: {fileID: 3343762174369439727}
   pauseMenu: {fileID: 2288353921082122239}
   cameraHolder: {fileID: 7732523661729192985}
-  mouseSensitivity: 3
+  mouseSensitivity: 2.5
   sprintSpeed: 9
-  walkSpeed: 4
+  walkSpeed: 5
   jumpForce: 300
   smoothTime: 0.15
   items:
@@ -1563,7 +1563,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.45
+  m_Radius: 0.7
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &6096690002226391175
 MonoBehaviour:
