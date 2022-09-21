@@ -119,6 +119,7 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     public void StartGame()
     {
+        MenuManager.Instance.OpenMenu("loading");
         PhotonNetwork.LoadLevel(1);
     }
 
