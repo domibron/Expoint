@@ -70,8 +70,9 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = (byte)maxPlayersSlider.value;
+        
 
-        PhotonNetwork.CreateRoom(roomNameInputField.text, roomOptions);
+        PhotonNetwork.CreateRoom($"roomNameInputField.text - max: {roomOptions.MaxPlayers}", roomOptions);
         MenuManager.Instance.OpenMenu("loading");
     }
 
@@ -83,6 +84,14 @@ public class Luancher : MonoBehaviourPunCallbacks
         playersOutOfMaxPlayersText.text = $"{PhotonNetwork.CurrentRoom.PlayerCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
 
         Player[] players = PhotonNetwork.PlayerList;
+
+        foreach (Player player in players)
+        {
+            if (PhotonNetwork.LocalPlayer.NickName == player.NickName) // see if can put in OnPlayerEnteredRoom
+            {
+                PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 1000).ToString(" 1000");
+            }
+        }
 
         foreach (Transform child in playerListContent)
         {
@@ -97,15 +106,15 @@ public class Luancher : MonoBehaviourPunCallbacks
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
     }
 
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        errorText.text = "Room Creation Failed: <color=\"blue\">ERROR CODE = " + returnCode + " <color=\"yellow\">REASON: " + message;
+        MenuManager.Instance.OpenMenu("error");
+    }
+
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
-    }
-
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        errorText.text = "Room Creation Failed: " + message;
-        MenuManager.Instance.OpenMenu("error");
     }
 
     public void StartGame()
@@ -121,9 +130,26 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     public void JoinRoom(RoomInfo info)
     {
-        PhotonNetwork.JoinRoom(info.Name);
-        MenuManager.Instance.OpenMenu("loading");
+        if (info.IsOpen && info.PlayerCount < info.MaxPlayers)
+        {
+            PhotonNetwork.JoinRoom(info.Name);
+            MenuManager.Instance.OpenMenu("loading");
+        }
+        else
+        {
+            OnJoinRoomFailed(3232, "Room is full or no longer exists");
+        }
+    }
 
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        errorText.text = "Room Join Failed: <color=\"blue\">ERROR CODE = " + returnCode + " <color=\"yellow\">REASON: " + message;
+        MenuManager.Instance.OpenMenu("error");
     }
 
     public override void OnLeftRoom()
@@ -135,14 +161,21 @@ public class Luancher : MonoBehaviourPunCallbacks
     {
         base.OnRoomListUpdate(p_list);
 
-        foreach (var room in p_list)
+        foreach (RoomInfo room in p_list)
         {
             for (int i = 0; i < p_list.Count; i++)
             {
                 if (room.Name == p_list[i].Name)
                 {
                     Rooms.Remove(room);
+                    continue;
                 }
+            }
+
+            if (room.PlayerCount >= room.MaxPlayers)
+            {
+                Rooms.Remove(room);
+                continue;
             }
 
             if (room.RemovedFromList)
@@ -181,7 +214,7 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         ClearRoomList();
 
-        foreach (var room in Rooms)
+        foreach (RoomInfo room in Rooms)
         {
             Instantiate(roomListItemPrefab, roomListContent).GetComponent<RoomListItem>().SetUp(room);
         }
@@ -195,10 +228,6 @@ public class Luancher : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
-    }
 
 
 
