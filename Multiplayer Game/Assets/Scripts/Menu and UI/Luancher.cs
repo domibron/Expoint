@@ -70,7 +70,7 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = (byte)maxPlayersSlider.value;
-        
+
 
         PhotonNetwork.CreateRoom($"roomNameInputField.text - max: {roomOptions.MaxPlayers}", roomOptions);
         MenuManager.Instance.OpenMenu("loading");

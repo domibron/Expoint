@@ -5,10 +5,14 @@ using Photon.Pun;
 using TMPro;
 using System.Net;
 
-public class Rifle : Gun
+public class AutomaticGun : Gun
 {
     [SerializeField] Camera cam;
     [SerializeField] TMP_Text ammoText;
+    [SerializeField] GameObject gunModel;
+
+    [SerializeField] GameObject HipPos;
+    [SerializeField] GameObject ADSPos;
 
     [SerializeField, Range(1, 1000)] float SPEED;
 
@@ -48,6 +52,19 @@ public class Rifle : Gun
         if (itemGameObject.activeSelf == false)
             return;
 
+
+        if (Input.GetMouseButton(1)) // FOV VALUES ARE HARD SET AND ARE THE SAME FOR ALL WEAPONS
+        {
+            gunModel.transform.localPosition = Vector3.Lerp(gunModel.transform.localPosition, ADSPos.transform.localPosition, 10f * Time.deltaTime);
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 30f, 10f * Time.deltaTime);
+        }
+        else
+        {
+            gunModel.transform.localPosition = Vector3.Lerp(gunModel.transform.localPosition, HipPos.transform.localPosition, 10f * Time.deltaTime);
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 60f, 10f * Time.deltaTime);
+        }
+
+
         if (!isReloading)
         {
             ammoText.text = $"{currentAmmo} / {((GunInfo)itemInfo).maxAmmoInClip}\n   {currentReserveAmmo}";
@@ -58,6 +75,12 @@ public class Rifle : Gun
             ammoText.text = $"<mspace=0.75em>{(Mathf.Round(reloadTimeLeft * 100f) / 100f).ToString("N2")}</mspace>\n## / {((GunInfo)itemInfo).maxAmmoInClip}\n   {currentReserveAmmo}";
         }
     }
+
+    //private void setfox(float value) // make a fov hander
+    //{
+    //	cam.fov = value;
+    //	weaponCam.fov = value;
+    //}
 
     public override void UseMouse0()
     {
@@ -164,6 +187,6 @@ public class Rifle : Gun
 
         Destroy(trail, 1f); // keeps it for a second.
 
-        
+
     }
 }
