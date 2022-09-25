@@ -13,16 +13,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(this);
-        }
-        else if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(this);
-        }
-
+        Instance = this;
+        DontDestroyOnLoad(this);
     }
 
     public override void OnEnable()
@@ -41,6 +33,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
         // make a swich statement
 
         if (scene.buildIndex == 1) // game scene
+        {
+            PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); // create function
+        }
+        else if (scene.buildIndex == 2) // game scene
         {
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); // create function
         }

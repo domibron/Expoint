@@ -24,6 +24,7 @@ public class Luancher : MonoBehaviourPunCallbacks
     [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject PlayerListItemPrefab;
     [SerializeField] GameObject startGameButton;
+    [SerializeField] GameObject mapSelectionPanel;
 
     void Awake()
     {
@@ -104,6 +105,7 @@ public class Luancher : MonoBehaviourPunCallbacks
         }
 
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+        mapSelectionPanel.SetActive(PhotonNetwork.IsMasterClient);
     }
 
 
@@ -122,7 +124,7 @@ public class Luancher : MonoBehaviourPunCallbacks
     public void StartGame()
     {
         MenuManager.Instance.OpenMenu("loading");
-        PhotonNetwork.LoadLevel(1);
+        PhotonNetwork.LoadLevel(MapManager.Instance.currentMapNumber);
     }
 
     public void LeaveRoom()

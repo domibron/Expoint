@@ -50,6 +50,9 @@ public class AutomaticGun : Gun
 
     private void Update()
     {
+        if (!PV.IsMine)
+            return;
+
         if (itemGameObject.activeSelf == false)
             return;
 
@@ -58,7 +61,7 @@ public class AutomaticGun : Gun
         {
             gunModel.transform.localPosition = Vector3.Lerp(gunModel.transform.localPosition, ADSPos.transform.localPosition, 10f * Time.deltaTime);
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 30f, 10f * Time.deltaTime);
-            playerController.mouseSensitivityMultiplyer = 0.3f;
+            playerController.mouseSensitivityMultiplyer = 0.2f;
         }
         else
         {
@@ -70,12 +73,12 @@ public class AutomaticGun : Gun
 
         if (!isReloading)
         {
-            ammoText.text = $"{currentAmmo} / {((GunInfo)itemInfo).maxAmmoInClip}\n   {currentReserveAmmo}";
+            ammoText.text = $"{currentAmmo} / {((GunInfo)itemInfo).maxAmmoInClip}<br>   {currentReserveAmmo}";
         }
         else
         {
             reloadTimeLeft -= Time.deltaTime;
-            ammoText.text = $"<mspace=0.75em>{(Mathf.Round(reloadTimeLeft * 100f) / 100f).ToString("N2")}</mspace>\n## / {((GunInfo)itemInfo).maxAmmoInClip}\n   {currentReserveAmmo}";
+            ammoText.text = $"<mspace=0.75em>{(Mathf.Round(reloadTimeLeft * 100f) / 100f).ToString("N2")}</mspace><br>## / {((GunInfo)itemInfo).maxAmmoInClip}<br>   {currentReserveAmmo}";
         }
     }
 

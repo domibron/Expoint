@@ -15,11 +15,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     [SerializeField] GameObject cameraHolder;
 
-    [SerializeField] float mouseSensitivity, sprintSpeed, walkSpeed, jumpForce, smoothTime;
+    [SerializeField] float sprintSpeed, walkSpeed, jumpForce, smoothTime;
 
     [SerializeField] Item[] items;
 
     public float mouseSensitivityMultiplyer = 1;
+    public float mouseSensitivity;
 
     int itemIndex;
     int previousItemIndex = -1;
@@ -147,6 +148,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
         if (Input.GetKeyDown(KeyCode.Space) && grounded && !IsOnSlope()) // other than onslope, this is defualt jumping.
         {
+            rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z);
             rb.AddForce(transform.up * jumpForce);
         }
         //else if (Input.GetKeyDown(KeyCode.Space) && grounded && IsOnSlope()) // inside is temp. Will rework or change
@@ -204,7 +206,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (grounded)
         {
             if (currentVerticalSpeed < 0f)
-                currentVerticalSpeed = 0f;
+                currentVerticalSpeed = 0.1f;
             rb.velocity = new Vector3(rb.velocity.x, currentVerticalSpeed, rb.velocity.z);
         }
         //else if (!grounded)
