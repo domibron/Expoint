@@ -8,6 +8,7 @@ using System.Net;
 public class AutomaticGun : Gun
 {
     [SerializeField] Camera cam;
+    [SerializeField] PlayerController playerController;
     [SerializeField] TMP_Text ammoText;
     [SerializeField] GameObject gunModel;
 
@@ -57,11 +58,13 @@ public class AutomaticGun : Gun
         {
             gunModel.transform.localPosition = Vector3.Lerp(gunModel.transform.localPosition, ADSPos.transform.localPosition, 10f * Time.deltaTime);
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 30f, 10f * Time.deltaTime);
+            playerController.mouseSensitivityMultiplyer = 0.3f;
         }
         else
         {
             gunModel.transform.localPosition = Vector3.Lerp(gunModel.transform.localPosition, HipPos.transform.localPosition, 10f * Time.deltaTime);
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 60f, 10f * Time.deltaTime);
+            playerController.mouseSensitivityMultiplyer = 1;
         }
 
 

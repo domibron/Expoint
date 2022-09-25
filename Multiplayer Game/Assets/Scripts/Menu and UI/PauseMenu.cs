@@ -20,18 +20,19 @@ public class PauseMenu : MonoBehaviourPunCallbacks
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            isPauseMenuActive = !isPauseMenuActive; 
+            isPauseMenuActive = !isPauseMenuActive;
         }
 
         pauseMenu.SetActive(isPauseMenuActive);
 
-        Cursor.lockState = (isPauseMenuActive ? CursorLockMode.Confined : CursorLockMode.Locked) ;
+        Cursor.lockState = (isPauseMenuActive ? CursorLockMode.Confined : CursorLockMode.Locked);
         Cursor.visible = isPauseMenuActive;
     }
 
     public void leaveRoom()
     {
         Destroy(RoomManager.Instance.gameObject);
+        Destroy(DiscordHanderler.Instance.gameObject);
 
         StartCoroutine(DisconnectAndLoad());
     }

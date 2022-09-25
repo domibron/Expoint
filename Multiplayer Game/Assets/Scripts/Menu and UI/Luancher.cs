@@ -72,7 +72,7 @@ public class Luancher : MonoBehaviourPunCallbacks
         roomOptions.MaxPlayers = (byte)maxPlayersSlider.value;
 
 
-        PhotonNetwork.CreateRoom($"roomNameInputField.text - max: {roomOptions.MaxPlayers}", roomOptions);
+        PhotonNetwork.CreateRoom($"{roomNameInputField.text} - max: {roomOptions.MaxPlayers}", roomOptions);
         MenuManager.Instance.OpenMenu("loading");
     }
 
@@ -87,9 +87,9 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         foreach (Player player in players)
         {
-            if (PhotonNetwork.LocalPlayer.NickName == player.NickName) // see if can put in OnPlayerEnteredRoom
+            if (PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) // see if can put in OnPlayerEnteredRoom
             {
-                PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 1000).ToString(" 1000");
+                PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 9999).ToString("-0000");
             }
         }
 
@@ -106,9 +106,11 @@ public class Luancher : MonoBehaviourPunCallbacks
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
     }
 
+
+
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        errorText.text = "Room Creation Failed: <color=\"blue\">ERROR CODE = " + returnCode + " <color=\"yellow\">REASON: " + message;
+        errorText.text = $"Room Creation Failed: <color=\"blue\">ERROR CODE = {returnCode} <br><color=\"yellow\">REASON: {message}";
         MenuManager.Instance.OpenMenu("error");
     }
 
@@ -142,14 +144,10 @@ public class Luancher : MonoBehaviourPunCallbacks
         }
     }
 
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
-    }
-
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        errorText.text = "Room Join Failed: <color=\"blue\">ERROR CODE = " + returnCode + " <color=\"yellow\">REASON: " + message;
+        errorText.text = $"Room Join Failed: <color=\"blue\">ERROR CODE = {returnCode} <br><color=\"yellow\">REASON: {message}</color>";
+
         MenuManager.Instance.OpenMenu("error");
     }
 

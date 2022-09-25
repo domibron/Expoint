@@ -217,21 +217,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &576293777 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3119998900730344848, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-  m_PrefabInstance: {fileID: 2132467451}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &831659508 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5039708295573962836, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-  m_PrefabInstance: {fileID: 2132467451}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1324786852 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1324786852, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-  m_PrefabInstance: {fileID: 2132467451}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1795001841
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,29 +383,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 45250762690307004, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: field of view
-      value: 48
-      objectReference: {fileID: 0}
-    - target: {fileID: 45250762690307004, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: near clip plane
-      value: 0.3
-      objectReference: {fileID: 0}
     - target: {fileID: 86135414148375849, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
       propertyPath: sceneViewId
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 543450651908793353, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 543450651908793353, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 543450651908793353, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3292291324563773934, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
       propertyPath: sceneViewId
@@ -477,34 +442,6 @@ PrefabInstance:
     - target: {fileID: 5466003983980032765, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
       propertyPath: m_Name
       value: PlayerPrefab
-      objectReference: {fileID: 0}
-    - target: {fileID: 5976560376147216200, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: ADSPos
-      value: 
-      objectReference: {fileID: 831659508}
-    - target: {fileID: 5976560376147216200, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: HipPos
-      value: 
-      objectReference: {fileID: 1324786852}
-    - target: {fileID: 7623796222755038349, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: ADSPos
-      value: 
-      objectReference: {fileID: 576293777}
-    - target: {fileID: 7623796222755038349, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: HipPos
-      value: 
-      objectReference: {fileID: 576293777}
-    - target: {fileID: 7623796222755038349, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: gunModel
-      value: 
-      objectReference: {fileID: 576293777}
-    - target: {fileID: 8368517775109941898, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.003
-      objectReference: {fileID: 0}
-    - target: {fileID: 8368517775109941898, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.25921
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3eeb86bc72e51e64290cb18f1b8b3ec8, type: 3}

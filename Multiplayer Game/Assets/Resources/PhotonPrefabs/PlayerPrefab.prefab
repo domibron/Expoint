@@ -377,10 +377,11 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 52041134964699662, guid: 4c673fbbea38b6b4fbd9cfdb4d410d90, type: 3}
   tracerPrefab: {fileID: 4869896325537101615, guid: 58ad8498f5a283d4eb25c1b0088563eb, type: 3}
   cam: {fileID: 45250762690307004}
+  playerController: {fileID: 8097817580832884914}
   ammoText: {fileID: 679204633203539990}
-  gunModel: {fileID: 0}
-  HipPos: {fileID: 0}
-  ADSPos: {fileID: 0}
+  gunModel: {fileID: 3119998900730344848}
+  HipPos: {fileID: 3119998900730344848}
+  ADSPos: {fileID: 3119998900730344848}
   SPEED: 175
 --- !u!114 &3292291324563773934
 MonoBehaviour:
@@ -646,6 +647,7 @@ MonoBehaviour:
   bulletImpactPrefab: {fileID: 52041134964699662, guid: 4c673fbbea38b6b4fbd9cfdb4d410d90, type: 3}
   tracerPrefab: {fileID: 4869896325537101615, guid: 58ad8498f5a283d4eb25c1b0088563eb, type: 3}
   cam: {fileID: 45250762690307004}
+  playerController: {fileID: 8097817580832884914}
   ammoText: {fileID: 679204633203539990}
   gunModel: {fileID: 919132147632717491}
   HipPos: {fileID: 1324786852}
@@ -1207,7 +1209,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 48
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -1394,7 +1396,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5039708295573962836}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.30999994, y: -0.25900006, z: 0.80200005}
+  m_LocalPosition: {x: 0.003, y: -0.25921, z: 0.80200005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1572,6 +1574,7 @@ MonoBehaviour:
   items:
   - {fileID: 5976560376147216200}
   - {fileID: 7623796222755038349}
+  mouseSensitivityMultiplyer: 1
 --- !u!114 &2587468647384287973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1765,7 +1768,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2832897922462094387
 Transform:
   m_ObjectHideFlags: 0
@@ -2538,15 +2541,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3428278726862397299, guid: 844700b28884d4d4caa40b2847bbf909, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.28
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3428278726862397299, guid: 844700b28884d4d4caa40b2847bbf909, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.441
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3428278726862397299, guid: 844700b28884d4d4caa40b2847bbf909, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.5849991
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3428278726862397299, guid: 844700b28884d4d4caa40b2847bbf909, type: 3}
       propertyPath: m_LocalRotation.w
