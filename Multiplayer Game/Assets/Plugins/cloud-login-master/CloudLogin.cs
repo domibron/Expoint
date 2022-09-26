@@ -41,7 +41,7 @@ namespace CloudLoginUnity
 
         //}
 
-       
+
 
         //#endregion
 
@@ -127,13 +127,13 @@ namespace CloudLoginUnity
         #region request: set up applicaton
         public static void SetUpGame(string gameId, string token, Action<string, bool> callback = null, bool seedStore = false)
         {
-            Log("CloudLogin Setting Up Game: "+ gameId+": "+ token);
+            Log("CloudLogin Setting Up Game: " + gameId + ": " + token);
             Instance.SetUpGamePrivate(gameId, token, callback, seedStore);
         }
 
         private void SetUpGamePrivate(string gameId, string token, Action<string, bool> callback = null, bool seedStore = false)
         {
-            StartCoroutine(SetUpGameRoutine(gameId, token, callback,seedStore));
+            StartCoroutine(SetUpGameRoutine(gameId, token, callback, seedStore));
         }
 
         private IEnumerator SetUpGameRoutine(string gameId, string token, Action<string, bool> callback = null, bool seedStore = false)
@@ -233,7 +233,7 @@ namespace CloudLoginUnity
         private IEnumerator SignInRoutine(string email, string password, Action<string, bool> callback = null)
         {
 
-            Log("CloudLogin Sign In: " + email );
+            Log("CloudLogin Sign In: " + email);
 
             if (GetGameId() == null)
                 throw new CloudLoginException("Please set up your game with PainLessAuth.SetUpGame before signing in users");
@@ -353,7 +353,7 @@ namespace CloudLoginUnity
             if (CloudLogin.GetGameId() == null)
                 throw new CloudLoginException("Please set up your game with CloudLogin.SetUpGame before modifying users");
 
-            var parameters = "?authentication_token=" + CloudLoginUser.CurrentUser.GetAuthenticationToken() + "&limit=" + limit.ToString() + "&one_per_user=" + onePerUser.ToString()+ "&leaderboard_name="+ LeaderboardName.ToString();
+            var parameters = "?authentication_token=" + CloudLoginUser.CurrentUser.GetAuthenticationToken() + "&limit=" + limit.ToString() + "&one_per_user=" + onePerUser.ToString() + "&leaderboard_name=" + LeaderboardName.ToString();
             var request = UnityWebRequest.Get(CloudLogin.GetBaseURL() + "/games/" + CloudLogin.GetGameId() + "/leaderboard_entries" + parameters);
             request.SetRequestHeader("authentication_token", CloudLoginUser.CurrentUser.GetAuthenticationToken());
 

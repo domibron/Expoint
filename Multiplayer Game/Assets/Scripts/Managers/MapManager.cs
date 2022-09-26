@@ -21,7 +21,7 @@ public class MapManager : MonoBehaviour
 
     void Start()
     {
-        currentMapNumber = 1;
+        currentMapNumber = 2;
     }
 
     void Update()

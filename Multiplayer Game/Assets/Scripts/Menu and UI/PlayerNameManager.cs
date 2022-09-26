@@ -7,44 +7,56 @@ using UnityEngine;
 public class PlayerNameManager : MonoBehaviour
 {
     [SerializeField] TMP_InputField usernameInput;
+    [SerializeField] TMP_Text userInfo;
+
+    string tempHolderForName;
 
     private void Start()
     {
         // insert some magic to set username
         // REWORK AND TESTING REQUIRED
 
-        if ((usernameInput.text.Contains("#") || PhotonNetwork.NickName.Contains("#")))// && CloudLoginUnity.CloudLoginUser.CurrentUser.GetAttributeValue("admin") != "true")
-        {
-            usernameInput.text.Replace("#", "O");
-            PhotonNetwork.NickName.Replace("#", "O");
-        }
+        //print(CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn());
 
-        if (PlayerPrefs.HasKey("username"))
+        if (CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn())
         {
-            usernameInput.text = PlayerPrefs.GetString("username");
-            PhotonNetwork.NickName = PlayerPrefs.GetString("username");
+            usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+            PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+            PlayerPrefs.SetString("username", usernameInput.text);
+            OnUsernameValueChanged();
+        }
+        else if (PlayerPrefs.HasKey("username"))
+        {
+            tempHolderForName = "Guest " + Random.Range(0, 100).ToString("0000");
+
+            PhotonNetwork.NickName = tempHolderForName;
+            PlayerPrefs.SetString("username", tempHolderForName);
+            usernameInput.text = tempHolderForName;
+
+            OnUsernameValueChanged();
         }
         else
         {
-            usernameInput.text = "Player " + Random.Range(0, 100).ToString("0000");
+            usernameInput.text = "Guest " + Random.Range(0, 100).ToString("0000");
             OnUsernameValueChanged();
         }
+
+        userInfo.text = $"Logged In as:<br>Username: {CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername()}<br>Confirm: {CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn()}<br><color=\"red\">Connection: --<br>Data Leaks: --";
     }
 
     public void OnUsernameValueChanged()
     {
-        if ((usernameInput.text.Contains("#") || PhotonNetwork.NickName.Contains("#")))// && CloudLoginUnity.CloudLoginUser.CurrentUser.GetAttributeValue("admin") != "true")
+        if (CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn())
         {
-            usernameInput.text.Replace("#", "O");
-            PhotonNetwork.NickName.Replace("#", "O");
-
-            PhotonNetwork.NickName = usernameInput.text;
+            usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+            PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
             PlayerPrefs.SetString("username", usernameInput.text);
         }
         else
         {
-            PhotonNetwork.NickName = usernameInput.text;
-            PlayerPrefs.SetString("username", usernameInput.text);
+            usernameInput.text = tempHolderForName;
+            PhotonNetwork.NickName = tempHolderForName;
+            //PlayerPrefs.SetString("username", usernameInput.text);
         }
     }
 }

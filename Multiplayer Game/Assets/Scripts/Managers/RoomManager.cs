@@ -32,11 +32,11 @@ public class RoomManager : MonoBehaviourPunCallbacks
     {
         // make a swich statement
 
-        if (scene.buildIndex == 1) // game scene
+        if (scene.buildIndex == 2) // game scene
         {
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); // create function
         }
-        else if (scene.buildIndex == 2) // game scene
+        else if (scene.buildIndex == 3) // game scene
         {
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); // create function
         }

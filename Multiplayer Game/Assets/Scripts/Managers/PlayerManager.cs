@@ -127,7 +127,7 @@ public class PlayerManager : MonoBehaviour
         //while(PhotonNetwork.InRoom)
         while (PhotonNetwork.InRoom)
             yield return null;
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
 }
