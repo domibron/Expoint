@@ -10,6 +10,15 @@ public class PlayerNameManager : MonoBehaviour
 
     private void Start()
     {
+        // insert some magic to set username
+        // REWORK AND TESTING REQUIRED
+
+        if ((usernameInput.text.Contains("#") || PhotonNetwork.NickName.Contains("#")))// && CloudLoginUnity.CloudLoginUser.CurrentUser.GetAttributeValue("admin") != "true")
+        {
+            usernameInput.text.Replace("#", "O");
+            PhotonNetwork.NickName.Replace("#", "O");
+        }
+
         if (PlayerPrefs.HasKey("username"))
         {
             usernameInput.text = PlayerPrefs.GetString("username");
@@ -24,7 +33,18 @@ public class PlayerNameManager : MonoBehaviour
 
     public void OnUsernameValueChanged()
     {
-        PhotonNetwork.NickName = usernameInput.text;
-        PlayerPrefs.SetString("username", usernameInput.text);
+        if ((usernameInput.text.Contains("#") || PhotonNetwork.NickName.Contains("#")))// && CloudLoginUnity.CloudLoginUser.CurrentUser.GetAttributeValue("admin") != "true")
+        {
+            usernameInput.text.Replace("#", "O");
+            PhotonNetwork.NickName.Replace("#", "O");
+
+            PhotonNetwork.NickName = usernameInput.text;
+            PlayerPrefs.SetString("username", usernameInput.text);
+        }
+        else
+        {
+            PhotonNetwork.NickName = usernameInput.text;
+            PlayerPrefs.SetString("username", usernameInput.text);
+        }
     }
 }

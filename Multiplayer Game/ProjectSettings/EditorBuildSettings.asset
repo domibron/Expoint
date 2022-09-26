@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Map2.unity
     guid: 3b6546664bf3d63459edf44a83a0cafe
+  - enabled: 1
+    path: Assets/cloud login stuff/cloud-login-master/ExampleScene.unity
+    guid: 85ae85aebc47b48f190ab11a96e037fc
   m_configObjects: {}

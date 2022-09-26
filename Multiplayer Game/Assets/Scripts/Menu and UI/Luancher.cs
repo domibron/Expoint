@@ -88,9 +88,9 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         foreach (Player player in players)
         {
-            if (PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) // see if can put in OnPlayerEnteredRoom
+            if (PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) // see if you can put this in OnPlayerEnteredRoom
             {
-                PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 9999).ToString("-0000");
+                PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 9999).ToString("0000");
             }
         }
 
@@ -108,6 +108,16 @@ public class Luancher : MonoBehaviourPunCallbacks
         mapSelectionPanel.SetActive(PhotonNetwork.IsMasterClient);
     }
 
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        StartCoroutine(InstaceButDelayed(newPlayer));
+    }
+
+    IEnumerator InstaceButDelayed(Player newPlayer)
+    {
+        yield return new WaitForSeconds(0.1f);
+        Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+    }
 
 
     public override void OnCreateRoomFailed(short returnCode, string message)

@@ -29,7 +29,6 @@ public class MapManager : MonoBehaviour
         if (!MenuManager.Instance.ReturnIsOpenMenuName("room"))
             return;
 
-        print(currentPrepedScene.name + " : " + currentMapNumber);
     }
 
     //public int ReturnSelectedMapInt()
