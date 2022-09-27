@@ -6,6 +6,7 @@ using TMPro;
 using Photon.Realtime;
 using UnityEditor;
 using UnityEngine.UI;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Luancher : MonoBehaviourPunCallbacks
 {
@@ -15,12 +16,15 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     [SerializeField] TMP_InputField roomNameInputField;
     [SerializeField] Slider maxPlayersSlider;
+
     [SerializeField] TMP_Text maxPlayerSliderText;
     [SerializeField] TMP_Text errorText;
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] TMP_Text playersOutOfMaxPlayersText;
+
     [SerializeField] Transform roomListContent;
     [SerializeField] Transform playerListContent;
+
     [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject PlayerListItemPrefab;
     [SerializeField] GameObject startGameButton;
@@ -69,8 +73,18 @@ public class Luancher : MonoBehaviourPunCallbacks
             return;
         }
 
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = (byte)maxPlayersSlider.value;
+        RoomOptions roomOptions = new RoomOptions()
+        {
+            MaxPlayers = (byte)maxPlayersSlider.value
+        };
+
+        // room properties
+        Hashtable RoomCustomProps = new Hashtable();
+        RoomCustomProps.Add("MasterTime", 5);
+        RoomCustomProps.Add("MasterKills", 5);
+        roomOptions.CustomRoomProperties = RoomCustomProps;
+        // https://youtu.be/aVUNiJ3MVSg
+
 
 
         PhotonNetwork.CreateRoom($"{roomNameInputField.text} - max: {roomOptions.MaxPlayers}", roomOptions);

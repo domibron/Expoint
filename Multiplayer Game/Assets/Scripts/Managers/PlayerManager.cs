@@ -8,8 +8,9 @@ using System.Linq;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using TMPro;
 using UnityEngine.SceneManagement;
+using ExitGames.Client.Photon;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject panel;
     [SerializeField] TMP_Text text;
@@ -21,9 +22,13 @@ public class PlayerManager : MonoBehaviour
     public float durationOfMatch;
     public int maxKills;
 
-    float matchTime;
+    public float matchTime;
+
+    bool isGameOver;
 
     PhotonView PV;
+    Room currentRoom;
+    Player masterPlayer;
 
     GameObject controller;
 
@@ -41,10 +46,27 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         panel.SetActive(false);
+        currentRoom = PhotonNetwork.CurrentRoom;
+
+        foreach (Player _player in PhotonNetwork.PlayerList)
+        {
+            if (_player.IsMasterClient)
+            {
+                masterPlayer = _player;
+                print("got em");
+            }
+        }
 
         if (PV.IsMine)
         {
-            matchTime = durationOfMatch * 60;
+            if (PhotonNetwork.IsMasterClient)
+            {
+                matchTime = durationOfMatch * 60;
+                Hashtable hash = new Hashtable();
+                hash.Add("MasterTime", matchTime);
+                hash.Add("MasterKills", maxKills);
+                PhotonNetwork.NetworkingClient.OpSetCustomPropertiesOfRoom(hash);
+            }
 
             CreateController();
         }
@@ -53,20 +75,38 @@ public class PlayerManager : MonoBehaviour
             Destroy(container);
             //Destroy(panel);
         }
+        print(" ; " + matchTime);
     }
 
     void Update()
     {
+
+
+
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Hashtable hash = new Hashtable();
+            hash.Add("MasterTime", matchTime);
+            PhotonNetwork.NetworkingClient.OpSetCustomPropertiesOfRoom(hash);
+        }
+
         if (PV.IsMine)
         {
-            matchTime -= Time.deltaTime;
+
+
+
+            if (!isGameOver && matchTime != 0)
+                matchTime -= Time.deltaTime;
 
             string holder = (Mathf.Round((matchTime / 60f) * 100f) / 100f).ToString("N2"); // time left display
             TopMidInfo.text = $"Max kills: {maxKills} | time remaining: <mspace=30>{holder}";
 
             if (matchTime <= 0)
             {
-                // GameOver
+                // GameOver send RPC event
+
+
                 // handle kills count
             }
 
@@ -138,6 +178,14 @@ public class PlayerManager : MonoBehaviour
     public static PlayerManager Find(Player player)
     {
         return FindObjectsOfType<PlayerManager>().SingleOrDefault(x => x.PV.Owner == player);
+    }
+
+    // ====================== eeee
+
+    [PunRPC]
+    void RPC_SendWinner()
+    {
+        // need to do this
     }
 
 

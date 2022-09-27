@@ -190,6 +190,7 @@ MonoBehaviour:
   TopMidInfo: {fileID: 3495161907112131305}
   durationOfMatch: 5
   maxKills: 10
+  matchTime: 0
 --- !u!1 &3481325426992134908
 GameObject:
   m_ObjectHideFlags: 0

@@ -49,7 +49,7 @@ public class LoginManager : MonoBehaviour
         {
             loadedSucsess = false;
             majorError = true;
-            EditorUtility.DisplayDialog("Add ID and Token", "Please add your token and ID, if you do not have one, you can create a free account from cloudlogin.dev", "OK");
+            //EditorUtility.DisplayDialog("Add ID and Token", "Please add your token and ID, if you do not have one, you can create a free account from cloudlogin.dev", "OK");
             throw new Exception("Token and ID Invalid");
         }
         else
