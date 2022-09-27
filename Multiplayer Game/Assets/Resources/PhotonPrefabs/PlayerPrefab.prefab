@@ -1750,7 +1750,7 @@ MonoBehaviour:
   ui: {fileID: 3343762174369439727}
   pauseMenu: {fileID: 2288353921082122239}
   cameraHolder: {fileID: 7732523661729192985}
-  sprintSpeed: 9
+  sprintSpeed: 10
   walkSpeed: 5
   jumpForce: 300
   smoothTime: 0.15

@@ -11,6 +11,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     bool active;
 
+    // extarnlly set vars
+
     void Awake()
     {
         Instance = this;
@@ -30,15 +32,24 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-        // make a swich statement
+        // make a swich statement.
 
+
+        // make into fuction to  instanciate.
         if (scene.buildIndex == 2) // game scene
         {
-            PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); // create function
+            InstaciatePlayerManager();
         }
         else if (scene.buildIndex == 3) // game scene
         {
-            PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); // create function
+            InstaciatePlayerManager();
         }
+    }
+
+    void InstaciatePlayerManager()
+    {
+        GameObject playerRe = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); // create function
+        PlayerManager playerManager = playerRe.GetComponent<PlayerManager>();
+        //playerManager.gaw = 69; // set adjofnwrasoufanw
     }
 }

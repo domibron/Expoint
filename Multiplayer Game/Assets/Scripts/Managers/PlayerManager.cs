@@ -15,6 +15,14 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] TMP_Text text;
     [SerializeField] Canvas canvas;
 
+    [SerializeField] GameObject container;
+    [SerializeField] TMP_Text TopMidInfo;
+
+    public float durationOfMatch;
+    public int maxKills;
+
+    float matchTime;
+
     PhotonView PV;
 
     GameObject controller;
@@ -36,16 +44,39 @@ public class PlayerManager : MonoBehaviour
 
         if (PV.IsMine)
         {
+            matchTime = durationOfMatch * 60;
+
             CreateController();
         }
         else
         {
+            Destroy(container);
             //Destroy(panel);
         }
     }
 
     void Update()
     {
+        if (PV.IsMine)
+        {
+            matchTime -= Time.deltaTime;
+
+            string holder = (Mathf.Round((matchTime / 60f) * 100f) / 100f).ToString("N2"); // time left display
+            TopMidInfo.text = $"Max kills: {maxKills} | time remaining: <mspace=30>{holder}";
+
+            if (matchTime <= 0)
+            {
+                // GameOver
+                // handle kills count
+            }
+
+            if (kills >= maxKills)
+            {
+                // game over
+                // this player wins
+            }
+        }
+
         if (panel.activeSelf)
         {
             timeLeft -= Time.deltaTime;
@@ -65,11 +96,14 @@ public class PlayerManager : MonoBehaviour
         panel.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.Confined;
+
         timeLeft = respawnTime;
         yield return new WaitForSeconds(respawnTime);
+
         panel.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
         CreateController();
     }
 
@@ -107,7 +141,7 @@ public class PlayerManager : MonoBehaviour
     }
 
 
-    // ===== canvas stuff =====
+    // ====================== leave room management ======================
 
     public void leaveRoom()
     {
