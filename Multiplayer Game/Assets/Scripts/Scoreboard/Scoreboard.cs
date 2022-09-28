@@ -11,9 +11,16 @@ public class Scoreboard : MonoBehaviourPunCallbacks
     [SerializeField] GameObject scoreboardItemPrefab;
     [SerializeField] CanvasGroup canvasGroup;
 
+    public static Scoreboard Instance;
+
     List<Player> players = new List<Player>();
 
     Dictionary<Player, ScoreboardItem> scoreboardItems = new Dictionary<Player, ScoreboardItem>();
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -59,6 +66,9 @@ public class Scoreboard : MonoBehaviourPunCallbacks
         {
             canvasGroup.alpha = 0;
         }
+
+        //if (players.Count >= 0)
+        //    print(scoreboardItems[players[0]].playerKills);
     }
 
     // quite usefull
@@ -69,21 +79,76 @@ public class Scoreboard : MonoBehaviourPunCallbacks
         int highestKills = 0;
         Player playerWithMostKills = players[0]; // might hurt might not
 
-        foreach (Player _player in players)
+        //foreach (Player _player in players)
+        //{
+        //	ScoreboardItem _item = scoreboardItems[_player];
+
+        //	string killsString = _item.killsText.text;
+        //	int kills = int.Parse(killsString);
+
+        //	if (kills <= highestKills) // will bite me in the ass need a tie exeption.s
+        //	{
+        //		playerWithMostKills = _player;
+        //		highestKills = kills;
+        //	}
+        //}
+
+        for (int i = 0; i < players.Count; i++)
         {
-            ScoreboardItem _item = scoreboardItems[_player];
-
-            string killsString = _item.killsText.text;
-            int kills = int.Parse(killsString);
-
-            if (kills <= highestKills) // will bite me in the ass need a tie exeption.s
+            int tempInt = scoreboardItems[players[i]].playerKills;
+            if (tempInt > highestKills)
             {
-                playerWithMostKills = _player;
-                highestKills = kills;
+                highestKills = tempInt;
+                playerWithMostKills = players[i];
             }
         }
 
         return playerWithMostKills;
         //print(playerWithMostKills.NickName + " with " + highestKills);
+    }
+
+    public int GetMostKillsInGame()
+    {
+        int highestKills = 0;
+        Player playerWithMostKills = players[0]; // might hurt might not
+
+        //foreach (Player _player in players)
+        //{
+        //    ScoreboardItem _item = scoreboardItems[_player];
+
+        //    //string killsString = _item.killsText.text;
+        //    //int kills = int.Parse(killsString);
+
+        //    int kills = _item.playerKills;
+
+        //    if (kills <= highestKills) // will bite me in the ass need a tie exeption.s
+        //    {
+        //        playerWithMostKills = _player;
+        //        highestKills = kills;
+        //    }
+        //}
+
+        //print(highestKills);
+        //return highestKills;
+
+
+        for (int i = 0; i < players.Count; i++)
+        {
+            int tempInt = scoreboardItems[players[i]].playerKills;
+            if (tempInt > highestKills)
+            {
+                highestKills = tempInt;
+            }
+        }
+
+        return highestKills;
+
+    }
+
+    public int GetPlayerKills(Player _player)
+    {
+        //print(scoreboardItems[_player].playerKills);
+
+        return scoreboardItems[_player].playerKills;
     }
 }

@@ -19,6 +19,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject container;
     [SerializeField] TMP_Text TopMidInfo;
 
+    [SerializeField] GameObject winningPanel;
+    [SerializeField] TMP_Text winnerText;
+
     public float matchDuration;
     public int maxKills;
 
@@ -72,11 +75,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             //    PhotonNetwork.NetworkingClient.OpSetCustomPropertiesOfRoom(hash);
             //}
 
-            if (PhotonNetwork.IsMasterClient)
-            {
-
-            }
-
             CreateController();
             SetVaribles();
 
@@ -124,9 +122,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         matchTime = matchDuration;
 
-        print(matchTime + " match time");
-        print(maxKills);
-        print(matchDuration);
+        //print(matchTime + " match time");
+        //print(maxKills);
+        //print(matchDuration);
     }
 
     void Update()
@@ -157,18 +155,21 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             TopMidInfo.text = $"Max kills: {maxKills} | time remaining: <mspace=30>{textHolder}";
 
             // ==== end match logic ====
-            if (matchTime <= 0)
+            if (PhotonNetwork.IsMasterClient && matchTime <= 0)
             {
                 // GameOver send RPC event
+                //Scoreboard.Instance.GetPlayerKills(Scoreboard.Instance.GetPlayerWithMostKills());
 
+                PV.RPC(nameof(RPC_SendWinner), RpcTarget.All, Scoreboard.Instance.GetPlayerWithMostKills(), Scoreboard.Instance.GetMostKillsInGame());
 
-                // handle kills count
+                // handle kill count
             }
 
             if (kills >= maxKills)
             {
                 // game over
                 // this player wins
+                PV.RPC(nameof(RPC_SendWinner), RpcTarget.All, PV.Owner, kills);
             }
         }
 
@@ -238,8 +239,30 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     // ====================== eeee
 
     [PunRPC]
-    void RPC_SendWinner()
+    void RPC_SendWinner(Player winnerPlayer, int kills)
     {
+        winnerText.text = $"Player [{winnerPlayer.NickName}] Won the game!<br>Kills: {Scoreboard.Instance.GetMostKillsInGame()}";
+
+        if (controller != null)
+            PhotonNetwork.Destroy(controller);
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
+
+        StopCoroutine(Respawn());
+
+        if (controller != null)
+            PhotonNetwork.Destroy(controller);
+
+        if (container != null)
+            container.SetActive(false);
+
+        winningPanel.SetActive(true);
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
+
+
         // need to do this
     }
 

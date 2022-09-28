@@ -45,6 +45,8 @@ public class LoginManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        print(Application.version);
+
         if (gameToken == "" || gameID == "")
         {
             loadedSucsess = false;
