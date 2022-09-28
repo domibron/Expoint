@@ -92,7 +92,7 @@ public class AutomaticGun : Gun
     {
         if (currentAmmo <= 0)
         {
-            Debug.Log("out off ammo reload!");
+            //Debug.Log("out off ammo reload!"); // create a hint box not a f****** log
             return;
         }
 

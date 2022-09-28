@@ -15,6 +15,8 @@ public class ScoreboardItem : MonoBehaviourPunCallbacks
 
     Player player;
 
+    public int playerKills;
+
     public void Initialize(Player player)
     {
         this.player = player;
@@ -25,8 +27,9 @@ public class ScoreboardItem : MonoBehaviourPunCallbacks
 
     void UpdateStats()
     {
-        if(player.CustomProperties.TryGetValue("kills", out object kills))
+        if (player.CustomProperties.TryGetValue("kills", out object kills))
         {
+            playerKills = (int)kills;
             killsText.text = kills.ToString();
         }
         if (player.CustomProperties.TryGetValue("deaths", out object deaths))

@@ -6,6 +6,7 @@ using TMPro;
 using Photon.Realtime;
 using UnityEditor;
 using UnityEngine.UI;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 public class Luancher : MonoBehaviourPunCallbacks
 {
@@ -16,11 +17,21 @@ public class Luancher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_InputField roomNameInputField;
     [SerializeField] Slider maxPlayersSlider;
     [SerializeField] TMP_Text maxPlayerSliderText;
+
+    [SerializeField] Slider MaxKillsSlider;
+    [SerializeField] TMP_Text MaxKillsSliderText;
+
+    [SerializeField] Slider MaxTimeSlider;
+    [SerializeField] TMP_Text MaxTimeSliderText;
+
     [SerializeField] TMP_Text errorText;
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] TMP_Text playersOutOfMaxPlayersText;
+    [SerializeField] TMP_Text versionText;
+
     [SerializeField] Transform roomListContent;
     [SerializeField] Transform playerListContent;
+
     [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject PlayerListItemPrefab;
     [SerializeField] GameObject startGameButton;
@@ -38,6 +49,7 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         Debug.Log("connecting to Lobby");
         PhotonNetwork.ConnectUsingSettings();
+        versionText.text = $"{Application.version}<br>Created by domibron<br>https://domibron.itch.io/multiplayer-game";
     }
 
     void Update()
@@ -46,7 +58,23 @@ public class Luancher : MonoBehaviourPunCallbacks
             playersOutOfMaxPlayersText.text = $"{PhotonNetwork.CurrentRoom.PlayerCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
 
         if (MenuManager.Instance.ReturnIsOpenMenuName("create room"))
-            maxPlayerSliderText.text = $"Maxplayers:\n{maxPlayersSlider.value} / {maxPlayersSlider.maxValue}";
+        {
+            // this logic hurts my eyes. why can we do this, whyyyyyyyyyyyyyyyyyyyy.
+            if (maxPlayersSlider.value == 0)
+                maxPlayerSliderText.text = $"Maxplayers: <b>Infinite</b>";
+            else
+                maxPlayerSliderText.text = $"Maxplayers: {maxPlayersSlider.value} / {maxPlayersSlider.maxValue}";
+
+            if (MaxKillsSlider.value == 0)
+                MaxKillsSliderText.text = $"Max Kills: <b>Infinite</b>";
+            else
+                MaxKillsSliderText.text = $"Max Kills: {MaxKillsSlider.value} / {MaxKillsSlider.maxValue}";
+
+            if (MaxTimeSlider.value == 0)
+                MaxTimeSliderText.text = $"Match Time: <b>Infinite</b>";
+            else
+                MaxTimeSliderText.text = $"Match Time: {MaxTimeSlider.value} / {MaxTimeSlider.maxValue}";
+        }
     }
 
     public override void OnConnectedToMaster()
@@ -69,8 +97,23 @@ public class Luancher : MonoBehaviourPunCallbacks
             return;
         }
 
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = (byte)maxPlayersSlider.value;
+        RoomOptions roomOptions = new RoomOptions()
+        {
+            MaxPlayers = (byte)maxPlayersSlider.value
+        };
+
+        float float1 = (MaxTimeSlider.value == 0 ? 99999 : MaxTimeSlider.value); // stops cringe
+        int int1 = (MaxKillsSlider.value == 0 ? 9999 : (int)MaxKillsSlider.value); // stops early end game
+
+        // room properties
+        Hashtable RoomCustomProps = new Hashtable();
+        RoomCustomProps.Add("MasterTime", float1);
+        RoomCustomProps.Add("MasterKills", int1);
+        RoomCustomProps.Add("MasterCT", 600f);
+        RoomCustomProps.Add("Version", Application.version);
+        roomOptions.CustomRoomProperties = RoomCustomProps;
+        // https://youtu.be/aVUNiJ3MVSg
+
 
 
         PhotonNetwork.CreateRoom($"{roomNameInputField.text} - max: {roomOptions.MaxPlayers}", roomOptions);
@@ -88,9 +131,9 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         foreach (Player player in players)
         {
-            if (PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) // see if can put in OnPlayerEnteredRoom
+            if (PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) // see if you can put this in OnPlayerEnteredRoom
             {
-                PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 9999).ToString("-0000");
+                PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 9999).ToString("0000");
             }
         }
 
@@ -106,8 +149,19 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
         mapSelectionPanel.SetActive(PhotonNetwork.IsMasterClient);
+
     }
 
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        StartCoroutine(InstaceButDelayed(newPlayer));
+    }
+
+    IEnumerator InstaceButDelayed(Player newPlayer)
+    {
+        yield return new WaitForSeconds(0.1f);
+        Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+    }
 
 
     public override void OnCreateRoomFailed(short returnCode, string message)
@@ -135,14 +189,20 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     public void JoinRoom(RoomInfo info)
     {
-        if (info.IsOpen && info.PlayerCount < info.MaxPlayers)
+        if (info.CustomProperties["Version"] == null)
+            OnJoinRoomFailed(3230, "Version was not specified (Old server)");
+
+        if (info.IsOpen && info.PlayerCount < info.MaxPlayers && Application.version == info.CustomProperties["Version"].ToString())
         {
             PhotonNetwork.JoinRoom(info.Name);
             MenuManager.Instance.OpenMenu("loading");
         }
         else
         {
-            OnJoinRoomFailed(3232, "Room is full or no longer exists");
+            if (Application.version == info.CustomProperties["Version"].ToString())
+                OnJoinRoomFailed(3231, "Versions are not the same!<br>their version: " + info.CustomProperties["Version"].ToString() + "<br>Your version: " + Application.version);
+            else
+                OnJoinRoomFailed(3232, "Room is full or no longer exists");
         }
     }
 
@@ -228,6 +288,7 @@ public class Luancher : MonoBehaviourPunCallbacks
             Destroy(trans.gameObject);
         }
     }
+
 
 
 
