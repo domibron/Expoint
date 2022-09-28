@@ -59,44 +59,60 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
         if (PV.IsMine)
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                matchTime = durationOfMatch * 60;
-                Hashtable hash = new Hashtable();
-                hash.Add("MasterTime", matchTime);
-                hash.Add("MasterKills", maxKills);
-                PhotonNetwork.NetworkingClient.OpSetCustomPropertiesOfRoom(hash);
-            }
+            //if (PhotonNetwork.IsMasterClient)
+            //{
+            //    matchTime = durationOfMatch * 60;
+            //    Hashtable hash = new Hashtable();
+            //    hash.Add("MasterTime", matchTime);
+            //    hash.Add("MasterKills", maxKills);
+            //    PhotonNetwork.NetworkingClient.OpSetCustomPropertiesOfRoom(hash);
+            //}
 
             CreateController();
+            SetVaribles();
         }
         else
         {
             Destroy(container);
             //Destroy(panel);
         }
-        print(" ; " + matchTime);
+    }
+
+    public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+    {
+        
+        SetVaribles();
+    }
+
+    void SetVaribles()
+    {
+        durationOfMatch = (float)PhotonNetwork.CurrentRoom.CustomProperties["MasterTime"];
+        maxKills = (int)PhotonNetwork.CurrentRoom.CustomProperties["MasterKills"];
+        print(durationOfMatch);
+        print(maxKills);
     }
 
     void Update()
     {
 
-
-
-
         if (PhotonNetwork.IsMasterClient)
         {
-            Hashtable hash = new Hashtable();
-            hash.Add("MasterTime", matchTime);
-            PhotonNetwork.NetworkingClient.OpSetCustomPropertiesOfRoom(hash);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable() { { "MasterTime", matchTime } });
         }
+
+        
+
+        //if (PhotonNetwork.IsMasterClient)
+        //{
+        //    Hashtable hash = new Hashtable();
+        //    hash.Add("MasterTime", matchTime);
+        //    PhotonNetwork.NetworkingClient.OpSetCustomPropertiesOfRoom(hash);
+        //}
 
         if (PV.IsMine)
         {
 
-
-
-            if (!isGameOver && matchTime != 0)
+            if (!isGameOver && matchTime != 0) // change the time - yes i need to point this out.
                 matchTime -= Time.deltaTime;
 
             string holder = (Mathf.Round((matchTime / 60f) * 100f) / 100f).ToString("N2"); // time left display

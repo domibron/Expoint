@@ -109,7 +109,8 @@ public class LoginManager : MonoBehaviour
 
     public void SkipAll()
     {
-        SceneManager.LoadScene(1);
+        SignIn("guest@guest.com", "Password2020");
+        StartCoroutine(loadIntoGame());
     }
 
 
@@ -223,8 +224,6 @@ public class LoginManager : MonoBehaviour
 
     public void Login()
     {
-        if (CloudLogin.GetGameName() == "Multiplayer Game")
-            print("yes");
 
         if (string.IsNullOrEmpty(emailImputField.text) || string.IsNullOrEmpty(passwordImputField.text))
             return;
