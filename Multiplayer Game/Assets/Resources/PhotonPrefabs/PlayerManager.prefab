@@ -188,7 +188,7 @@ MonoBehaviour:
   canvas: {fileID: 3682240544226468378}
   container: {fileID: 1368268308346846721}
   TopMidInfo: {fileID: 3495161907112131305}
-  durationOfMatch: 5
+  matchDuration: 0
   maxKills: 10
   matchTime: 0
 --- !u!1 &3481325426992134908

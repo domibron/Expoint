@@ -80,8 +80,9 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         // room properties
         Hashtable RoomCustomProps = new Hashtable();
-        RoomCustomProps.Add("MasterTime", 5);
+        RoomCustomProps.Add("MasterTime", 3f);
         RoomCustomProps.Add("MasterKills", 5);
+        RoomCustomProps.Add("MasterCT", 32f);
         roomOptions.CustomRoomProperties = RoomCustomProps;
         // https://youtu.be/aVUNiJ3MVSg
 

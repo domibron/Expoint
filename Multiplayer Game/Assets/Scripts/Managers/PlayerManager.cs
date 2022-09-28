@@ -19,12 +19,17 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject container;
     [SerializeField] TMP_Text TopMidInfo;
 
-    public float durationOfMatch;
+    public float matchDuration;
     public int maxKills;
 
     public float matchTime;
 
+    float minutes;
+    float seconds;
+    string textHolder;
+
     bool isGameOver;
+    bool ranPrimary = false;
 
     PhotonView PV;
     Room currentRoom;
@@ -43,7 +48,7 @@ public class PlayerManager : MonoBehaviourPunCallbacks
         PV = GetComponent<PhotonView>();
     }
 
-    void Start()
+    IEnumerator Start()
     {
         panel.SetActive(false);
         currentRoom = PhotonNetwork.CurrentRoom;
@@ -53,7 +58,6 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             if (_player.IsMasterClient)
             {
                 masterPlayer = _player;
-                print("got em");
             }
         }
 
@@ -68,8 +72,26 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             //    PhotonNetwork.NetworkingClient.OpSetCustomPropertiesOfRoom(hash);
             //}
 
+            if (PhotonNetwork.IsMasterClient)
+            {
+
+            }
+
             CreateController();
             SetVaribles();
+
+            yield return new WaitForSeconds(0.5f);
+
+            // after the varibles are set it will set match duration - host will manage the time.
+            // this is to pervent d-sync and anyone trying to trigger a endgame.
+            matchTime = matchDuration; // converts minuets to seconds.
+
+            while (!PhotonNetwork.IsConnectedAndReady)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            SetVaribles();
+            matchTime = matchDuration;
         }
         else
         {
@@ -80,44 +102,61 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
     {
-        
-        SetVaribles();
+        if (!ranPrimary)
+            SetVaribles();
+        else if (!PhotonNetwork.IsMasterClient) // add master client check
+        {
+            matchTime = (float)PhotonNetwork.CurrentRoom.CustomProperties["MasterCT"];
+
+            minutes = Mathf.Floor(matchTime / 60);
+            seconds = matchTime % 60;
+            textHolder = $"{minutes}:{Mathf.RoundToInt(seconds)}"; // time left display - currently for mins and secs.
+        }
     }
 
     void SetVaribles()
     {
-        durationOfMatch = (float)PhotonNetwork.CurrentRoom.CustomProperties["MasterTime"];
+        ranPrimary = true;
+
+        matchDuration = (float)PhotonNetwork.CurrentRoom.CustomProperties["MasterTime"] * 60;
         maxKills = (int)PhotonNetwork.CurrentRoom.CustomProperties["MasterKills"];
-        print(durationOfMatch);
+        matchTime = (float)PhotonNetwork.CurrentRoom.CustomProperties["MasterCT"]; // DO NOT REMOVE THIS - the time does not set to matchDuration.
+
+        matchTime = matchDuration;
+
+        print(matchTime + " match time");
         print(maxKills);
+        print(matchDuration);
     }
 
     void Update()
     {
 
-        if (PhotonNetwork.IsMasterClient)
-        {
-            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable() { { "MasterTime", matchTime } });
-        }
-
-        
-
-        //if (PhotonNetwork.IsMasterClient)
-        //{
-        //    Hashtable hash = new Hashtable();
-        //    hash.Add("MasterTime", matchTime);
-        //    PhotonNetwork.NetworkingClient.OpSetCustomPropertiesOfRoom(hash);
-        //}
-
         if (PV.IsMine)
         {
 
-            if (!isGameOver && matchTime != 0) // change the time - yes i need to point this out.
+            if (!isGameOver && PhotonNetwork.IsMasterClient) // change the time - yes i need to point this out.
+            {
                 matchTime -= Time.deltaTime;
+                PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable() { { "MasterCT", matchTime } }); // set the global value
 
-            string holder = (Mathf.Round((matchTime / 60f) * 100f) / 100f).ToString("N2"); // time left display
-            TopMidInfo.text = $"Max kills: {maxKills} | time remaining: <mspace=30>{holder}";
+                minutes = Mathf.Floor(matchTime / 60);
+                seconds = matchTime % 60;
+                textHolder = $"{minutes}:{Mathf.RoundToInt(seconds)}";
+            }
+            else if (!isGameOver)
+            {
+                matchTime = (float)PhotonNetwork.CurrentRoom.CustomProperties["MasterCT"]; // syncing off hosts.
+            }
 
+
+            //float timeHolder = matchTime / 60f; // match time is getting set faster and before this update is called so temp is here to help with that.
+
+            //string textHolder = $"{minutes}:{Mathf.RoundToInt(seconds)}"; // time left display - currently for mins and secs.
+
+            TopMidInfo.text = $"Max kills: {maxKills} | time remaining: <mspace=30>{textHolder}";
+
+            // ==== end match logic ====
             if (matchTime <= 0)
             {
                 // GameOver send RPC event
