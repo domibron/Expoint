@@ -1,7 +1,6 @@
 # Multiplayer Game
 
-> Alpha,
-> early access granted to select few
+> Alpha - can play the game on itch
 
 
 
@@ -11,7 +10,9 @@
 
 
 
-
+# DO NOT DOWNLOAD THE GAME FROM HERE
+> if you're looking to get the game got to the game's itch.io page.
+https://domibron.itch.io/multiplayer-game
 
 
 
