@@ -17,4 +17,4 @@ currently not released
 
 
 
-&copy; 2022 domibron
+&copy; 2022 domibron, Dominic McNeill
