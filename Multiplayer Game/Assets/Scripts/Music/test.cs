@@ -54,7 +54,6 @@ public class test : MonoBehaviourPunCallbacks
         }
     }
 
-    [SerializeField]
     void reloadmusiclol()
     {
         PV.RPC(nameof(RPC_SetMusicToPlayer), RpcTarget.All, Random.Range(0, music.Count - 1));
