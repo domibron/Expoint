@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Map2.unity
     guid: 3b6546664bf3d63459edf44a83a0cafe
+  - enabled: 1
+    path: Assets/Scenes/Levels/NightClub/NightClub1.unity
+    guid: 31e956a43f4f2c94395fd7396fbc50a1
   m_configObjects: {}

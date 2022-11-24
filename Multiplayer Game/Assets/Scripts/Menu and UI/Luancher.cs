@@ -44,6 +44,7 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     void Start()
     {
+
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
 
@@ -124,9 +125,9 @@ public class Luancher : MonoBehaviourPunCallbacks
     {
         if (Application.version != PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString())
         {
+            MenuManager.Instance.OpenMenu("error");
+            OnJoinRoomFailed(3231, "Versions are not the same!<br>their version: " + PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString() + "<br>Your version: " + Application.version);
             PhotonNetwork.Disconnect();
-            //OnJoinRoomFailed(3231, "Versions are not the same!<br>their version: " + PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString() + "<br>Your version: " + Application.version);
-            //MenuManager.Instance.OpenMenu("error");
         }
 
         MenuManager.Instance.OpenMenu("room");

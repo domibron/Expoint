@@ -289,5 +289,4 @@ public class PlayerManager : MonoBehaviourPunCallbacks
             yield return null;
         SceneManager.LoadScene(1);
     }
-
 }

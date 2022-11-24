@@ -9,7 +9,7 @@ public class MapManager : MonoBehaviour
 
     [SerializeField] Map[] maps;
 
-    public Scene currentPrepedScene;
+    private Scene currentPrepedScene;
 
     public int currentMapNumber;
 
