@@ -15,6 +15,8 @@ public class test : MonoBehaviourPunCallbacks
 
     private PhotonView PV;
 
+    private int currentMusicInt;
+
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +30,8 @@ public class test : MonoBehaviourPunCallbacks
             // audioSource.clip = tempAC;
             // audioSource.Play();
 
-            PV.RPC(nameof(RPC_SetMusicToPlayer), RpcTarget.All, Random.Range(0, music.Count - 1));
+            int tempint = Random.Range(0, music.Count - 1);
+            PV.RPC(nameof(RPC_SetMusicToPlayer), RpcTarget.All, tempint);
 
             //PV.RPC(nameof(RPC_SetMusicToPlayer), RpcTarget.All, tempAC);
         }
@@ -42,8 +45,8 @@ public class test : MonoBehaviourPunCallbacks
             // AudioClip tempAC = music[Random.Range(0, music.Count - 1)];
             // audioSource.clip = tempAC;
             // audioSource.Play();
-
-            PV.RPC(nameof(RPC_SetMusicToPlayer), RpcTarget.All, Random.Range(0, music.Count - 1));
+            int tempint = Random.Range(0, music.Count - 1);
+            PV.RPC(nameof(RPC_SetMusicToPlayer), RpcTarget.All, tempint);
 
             //PV.RPC(nameof(RPC_SetMusicToPlayer), RpcTarget.Others, tempAC);
         }
@@ -51,6 +54,20 @@ public class test : MonoBehaviourPunCallbacks
         if (Input.GetKeyDown(KeyCode.M))
         {
             audioSource.mute = !audioSource.mute;
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if (currentMusicInt + 1 >= music.Count)
+            {
+                currentMusicInt = 0;
+                PV.RPC(nameof(RPC_SetMusicToPlayer), RpcTarget.All, currentMusicInt);
+            }
+            else
+            {
+                currentMusicInt++;
+                PV.RPC(nameof(RPC_SetMusicToPlayer), RpcTarget.All, currentMusicInt);
+            }
         }
     }
 
