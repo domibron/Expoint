@@ -35,12 +35,16 @@ public class RoomManager : MonoBehaviourPunCallbacks
         // make a swich statement.
 
 
-        // make into fuction to  instanciate.
+        // make into fuction to  instanciate. please make a list of scenes this is just bad.
         if (scene.buildIndex == 2) // game scene
         {
             InstaciatePlayerManager();
         }
         else if (scene.buildIndex == 3) // game scene
+        {
+            InstaciatePlayerManager();
+        }
+        else if (scene.buildIndex == 4) // game scene
         {
             InstaciatePlayerManager();
         }

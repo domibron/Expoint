@@ -44,6 +44,7 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     void Start()
     {
+
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
 
@@ -122,6 +123,13 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        if (Application.version != PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString())
+        {
+            MenuManager.Instance.OpenMenu("error");
+            OnJoinRoomFailed(3231, "Versions are not the same!<br>their version: " + PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString() + "<br>Your version: " + Application.version);
+            PhotonNetwork.Disconnect();
+        }
+
         MenuManager.Instance.OpenMenu("room");
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
@@ -189,20 +197,19 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     public void JoinRoom(RoomInfo info)
     {
-        if (info.CustomProperties["Version"] == null)
-            OnJoinRoomFailed(3230, "Version was not specified (Old server)");
+        //if (info.CustomProperties["Version"] == null)
+        //    OnJoinRoomFailed(3230, "Version was not specified (Old server)");
 
-        if (info.IsOpen && info.PlayerCount < info.MaxPlayers && Application.version == info.CustomProperties["Version"].ToString())
+        if (info.IsOpen && info.PlayerCount < info.MaxPlayers)
         {
             PhotonNetwork.JoinRoom(info.Name);
             MenuManager.Instance.OpenMenu("loading");
         }
         else
         {
-            if (Application.version == info.CustomProperties["Version"].ToString())
-                OnJoinRoomFailed(3231, "Versions are not the same!<br>their version: " + info.CustomProperties["Version"].ToString() + "<br>Your version: " + Application.version);
-            else
-                OnJoinRoomFailed(3232, "Room is full or no longer exists");
+            //if (Application.version != info.CustomProperties["Version"].ToString())
+            //	OnJoinRoomFailed(3231, "Versions are not the same!<br>their version: " + info.CustomProperties["Version"].ToString() + "<br>Your version: " + Application.version);
+            OnJoinRoomFailed(3232, "Room is full or no longer exists");
         }
     }
 
