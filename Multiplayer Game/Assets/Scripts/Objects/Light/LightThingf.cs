@@ -14,6 +14,8 @@ public class LightThingf : MonoBehaviour
 
     public float delay = 1f;
 
+    public float attualDelay = 1f;
+
     private float time;
     private float holdingTime = 0;
 
@@ -31,33 +33,41 @@ public class LightThingf : MonoBehaviour
     {
         time += Time.deltaTime;
 
-        RaycastHit hit;
-        Physics.Raycast(transform.position, transform.forward, out hit, 200f);
-        lightLight.range = hit.distance + 20f;
+        if (time < attualDelay)
+            return;
 
-        if (time >= holdingTime && DontRun)
-        {
-            lightObject.transform.localRotation = Quaternion.Euler(startAngle, 0, 0);
+        //RaycastHit hit;
+        //Physics.Raycast(transform.position, transform.forward, out hit, 200f);
+        //lightLight.range = hit.distance + 20f;
 
-            DontRun = false;
+        // if (time >= holdingTime && DontRun)
+        // {
+        //     lightObject.transform.localRotation = Quaternion.Euler(startAngle, 0, 0);
 
-            holdingTime += delay;
-        }
+        //     DontRun = false;
+
+        //     holdingTime += delay;
+        // }
 
         if (lightObject.transform.localRotation.x < 0.98f && !DontRun)
         {
             //lightObject.transform.Rotate(Time.deltaTime * speed, 0f, 0f);
 
-            lightLight.enabled = true;
+            //lightLight.enabled = true;
             lightObject.transform.Rotate(Time.deltaTime * speed, 0f, 0f);
 
 
 
         }
+        else if (lightObject.transform.localRotation.x > 0.1)
+        {
+            lightObject.transform.Rotate(Time.deltaTime * -speed, 0f, 0f);
+            DontRun = true;
+        }
         else
         {
-            lightLight.enabled = false;
-            DontRun = true;
+            //lightLight.enabled = false;
+            DontRun = false;
         }
     }
 }
