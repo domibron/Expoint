@@ -24,6 +24,7 @@ public class test : MonoBehaviourPunCallbacks
         audioSource = GetComponent<AudioSource>();
         PV = GetComponent<PhotonView>();
 
+
         if (PhotonNetwork.IsMasterClient)
         {
             // AudioClip tempAC = music[Random.Range(0, music.Count - 1)];
