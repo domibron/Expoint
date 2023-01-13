@@ -91,6 +91,11 @@ public class Luancher : MonoBehaviourPunCallbacks
         Debug.Log("Joined Lobby");
     }
 
+    public void CreateTeamRoom()
+    {
+        // lol
+    }
+
     public void CreateRoom()
     {
         if (string.IsNullOrEmpty(roomNameInputField.text))
@@ -187,6 +192,11 @@ public class Luancher : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu("loading");
         PhotonNetwork.LoadLevel(MapManager.Instance.currentMapNumber);
+    }
+
+    public void StartTeamGame()
+    {
+
     }
 
     public void LeaveRoom()
