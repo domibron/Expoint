@@ -241,6 +241,8 @@ public class PlayerManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void RPC_SendWinner(Player winnerPlayer, int kills)
     {
+        isGameOver = true;
+
         winnerText.text = $"Player [{winnerPlayer.NickName}] Won the game!<br>Kills: {Scoreboard.Instance.GetMostKillsInGame()}";
 
         if (controller != null)

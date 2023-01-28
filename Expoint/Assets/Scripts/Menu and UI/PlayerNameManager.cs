@@ -13,6 +13,7 @@ public class PlayerNameManager : MonoBehaviour
 
     private void Start()
     {
+
         // insert some magic to set username
         // REWORK AND TESTING REQUIRED
 
