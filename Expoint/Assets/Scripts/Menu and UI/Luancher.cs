@@ -28,7 +28,6 @@ public class Luancher : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text roomNameText;
     [SerializeField] TMP_Text playersOutOfMaxPlayersText;
     [SerializeField] TMP_Text versionText;
-    [SerializeField] TMP_Text logBox;
 
     [SerializeField] Transform roomListContent;
     [SerializeField] Transform playerListContent;
@@ -55,11 +54,6 @@ public class Luancher : MonoBehaviourPunCallbacks
         Debug.Log("connecting to Lobby");
         PhotonNetwork.ConnectUsingSettings();
         versionText.text = $"{Application.version}<br>Created by domibron<br>https://domibron.itch.io/multiplayer-game";
-#if (UNITY_EDITOR)
-        logBox.text = $"LOGGED IN? NULL<br>name: NULL";
-#else
-		logBox.text = $"LOGGED IN? {CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn()}<br>name: {PhotonNetwork.NickName}";
-#endif
     }
 
     void Update()
@@ -132,7 +126,8 @@ public class Luancher : MonoBehaviourPunCallbacks
 
 
 
-        PhotonNetwork.CreateRoom($"{roomNameInputField.text} - max: {roomOptions.MaxPlayers}", roomOptions);
+        //PhotonNetwork.CreateRoom($"{roomNameInputField.text} - max: {roomOptions.MaxPlayers}", roomOptions);
+        PhotonNetwork.CreateRoom($"ROOM", roomOptions);
         MenuManager.Instance.OpenMenu("loading");
     }
 
@@ -210,9 +205,9 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         if (Application.version != PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString())
         {
+            PhotonNetwork.Disconnect();
             MenuManager.Instance.OpenMenu("error");
             OnJoinRoomFailed(3231, "Versions are not the same!<br>their version: " + PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString() + "<br>Your version: " + Application.version);
-            PhotonNetwork.Disconnect();
         }
 
         MenuManager.Instance.OpenMenu("team room");
@@ -224,7 +219,7 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         foreach (Player player in players)
         {
-            if (PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) // see if you can put this in OnPlayerEnteredRoom
+            if ((PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) || (PhotonNetwork.LocalPlayer.NickName == string.Empty)) // see if you can put this in OnPlayerEnteredRoom
             {
                 PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 9999).ToString("0000");
             }
@@ -248,6 +243,9 @@ public class Luancher : MonoBehaviourPunCallbacks
             props.Add("team", 0);
             players[i].CustomProperties = props;
         }
+
+        startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+        mapSelectionPanel.SetActive(PhotonNetwork.IsMasterClient);
 
     }
 
@@ -297,7 +295,7 @@ public class Luancher : MonoBehaviourPunCallbacks
     {
         if (hashtable.ContainsKey("team"))
         {
-            int x = (int)PhotonNetwork.LocalPlayer.CustomProperties["team"];
+            int x = (int)hashtable["team"];
 
             if (x == 0)
             {
@@ -376,7 +374,8 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     public void StartTeamGame()
     {
-
+        MenuManager.Instance.OpenMenu("loading");
+        PhotonNetwork.LoadLevel(MapManager.Instance.currentMapNumber);
     }
 
     public void LeaveRoom()

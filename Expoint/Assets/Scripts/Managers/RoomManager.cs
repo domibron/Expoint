@@ -52,8 +52,8 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     void InstaciatePlayerManager()
     {
-        GameObject playerRe = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity); // create function
-        PlayerManager playerManager = playerRe.GetComponent<PlayerManager>();
-        //playerManager.gaw = 69; // set adjofnwrasoufanw
+        GameObject playerRe = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager2"), Vector3.zero, Quaternion.identity); // create function
+        PlayerManager2 playerManager2 = playerRe.GetComponent<PlayerManager2>();
+        //playerManager.gaw = 69; // set sensitivity and such
     }
 }

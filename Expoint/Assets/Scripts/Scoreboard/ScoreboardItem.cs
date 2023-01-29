@@ -12,6 +12,8 @@ public class ScoreboardItem : MonoBehaviourPunCallbacks
     public TMP_Text usernameText;
     public TMP_Text killsText;
     public TMP_Text deathsText;
+    public TMP_Text scoreText;
+    public TMP_Text teamText;
 
     Player player;
 
@@ -20,8 +22,19 @@ public class ScoreboardItem : MonoBehaviourPunCallbacks
     public void Initialize(Player player)
     {
         this.player = player;
+        if (player.NickName == "domiborn")
+            usernameText.text = "<color=#FFD700>domibron";
+        else if (player.NickName != string.Empty)
+            usernameText.text = player.NickName;
+        else
+            usernameText.text = "NAME IS BLANK";
 
-        usernameText.text = player.NickName;
+
+        teamText.text = player.CustomProperties["team"].ToString();
+        scoreText.text = "0";
+        deathsText.text = "0";
+        killsText.text = "0";
+
         UpdateStats();
     }
 

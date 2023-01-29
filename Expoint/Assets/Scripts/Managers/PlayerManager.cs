@@ -182,8 +182,9 @@ public class PlayerManager : MonoBehaviourPunCallbacks
 
     void CreateController()
     {
-        Transform spawnpoint = SpawnManager.Instance.GetSpawnpoint();
-        controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerPrefab"), spawnpoint.position, spawnpoint.rotation, 0, new object[] { PV.ViewID });
+        //Transform spawnpoint = SpawnManager.Instance.GetAnySpawnpoint();
+        //controller = PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "TeamPlayerPrefab"), spawnpoint.position, spawnpoint.rotation, 0, new object[] { PV.ViewID });
+        // respawn point change to respected team.
 
     }
 

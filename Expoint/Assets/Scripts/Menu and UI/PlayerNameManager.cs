@@ -24,6 +24,7 @@ public class PlayerNameManager : MonoBehaviour
             usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
             PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
             PlayerPrefs.SetString("username", usernameInput.text);
+            // PlayerPrefs.Save();
             OnUsernameValueChanged();
         }
         else if (PlayerPrefs.HasKey("username"))
@@ -32,6 +33,7 @@ public class PlayerNameManager : MonoBehaviour
 
             PhotonNetwork.NickName = tempHolderForName;
             PlayerPrefs.SetString("username", tempHolderForName);
+            // PlayerPrefs.Save();
             usernameInput.text = tempHolderForName;
 
             OnUsernameValueChanged();
@@ -52,6 +54,7 @@ public class PlayerNameManager : MonoBehaviour
             usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
             PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
             PlayerPrefs.SetString("username", usernameInput.text);
+            // PlayerPrefs.Save();
         }
         else
         {

@@ -6,17 +6,24 @@ public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager Instance;
 
-    Spawnpoint[] spawnpoints;
+    TeamASpawnPoint[] TeamASpawnPoints;
+    TeamBSpawnPoint[] TeamBSpawnPoints;
 
     private void Awake()
     {
         Instance = this;
-        spawnpoints = GetComponentsInChildren<Spawnpoint>();
+        TeamASpawnPoints = GetComponentsInChildren<TeamASpawnPoint>();
+        TeamBSpawnPoints = GetComponentsInChildren<TeamBSpawnPoint>();
     }
 
-    public Transform GetSpawnpoint()
+    public Transform GetTeamASpawnPoint()
     {
-        return spawnpoints[Random.Range(0, spawnpoints.Length)].transform;
+        return TeamASpawnPoints[Random.Range(0, TeamASpawnPoints.Length)].transform;
+    }
+
+    public Transform GetTeamBSpawnPoint()
+    {
+        return TeamBSpawnPoints[Random.Range(0, TeamBSpawnPoints.Length)].transform;
     }
 
 }

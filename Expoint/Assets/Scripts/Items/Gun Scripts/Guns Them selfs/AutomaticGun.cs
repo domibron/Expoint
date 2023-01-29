@@ -2,18 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using System.Net;
 
 public class AutomaticGun : Gun
 {
     [SerializeField] Camera cam;
-    [SerializeField] PlayerController playerController;
+    [SerializeField] PlayerController2 playerController2;
     [SerializeField] TMP_Text ammoText;
     [SerializeField] GameObject gunModel;
 
     [SerializeField] GameObject HipPos;
     [SerializeField] GameObject ADSPos;
+
+    [SerializeField] AudioSource audioSource;
 
     [SerializeField, Range(1, 1000)] float SPEED;
 
@@ -61,13 +64,13 @@ public class AutomaticGun : Gun
         {
             gunModel.transform.localPosition = Vector3.Lerp(gunModel.transform.localPosition, ADSPos.transform.localPosition, 10f * Time.deltaTime);
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 30f, 10f * Time.deltaTime);
-            playerController.mouseSensitivityMultiplyer = 0.2f;
+            playerController2.mouseSensitivityMultiplyer = 0.2f; // THIS IS NOT MENT TO BE HARD SET, FIX SOON!
         }
         else
         {
             gunModel.transform.localPosition = Vector3.Lerp(gunModel.transform.localPosition, HipPos.transform.localPosition, 10f * Time.deltaTime);
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 60f, 10f * Time.deltaTime);
-            playerController.mouseSensitivityMultiplyer = 1;
+            playerController2.mouseSensitivityMultiplyer = 1;
         }
 
 
@@ -145,11 +148,27 @@ public class AutomaticGun : Gun
 
         currentAmmo--;
 
+        PV.RPC(nameof(RPC_SoundPlay), RpcTarget.All);
+
         Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f));
         ray.origin = cam.transform.position;
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((GunInfo)itemInfo).damage);
+            IDamageable ID = hit.collider.gameObject.GetComponentInParent<IDamageable>();
+
+            if (ID != null) // try using tags instead.
+            {
+                PhotonView PVTarg = hit.transform.GetComponentInParent<PhotonView>();
+
+                if ((int)PVTarg.Owner.CustomProperties["team"] != (int)PV.Owner.CustomProperties["team"])
+                {
+                    print($"targ : {PVTarg.Owner.CustomProperties["team"]} | {PV.Owner.CustomProperties["team"]}");
+
+                    hit.collider.gameObject.GetComponent<IDamageable>()?.TakeDamage(((GunInfo)itemInfo).damage); // CAN SIMPLIFY THIS.
+
+                }
+            }
+
             PV.RPC(nameof(RPC_Shoot), RpcTarget.All, hit.point, hit.normal);
 
             Vector3 start = cam.transform.position;
@@ -194,5 +213,11 @@ public class AutomaticGun : Gun
         Destroy(trail, 1f); // keeps it for a second.
 
 
+    }
+
+    [PunRPC]
+    void RPC_SoundPlay()
+    {
+        audioSource.Play();
     }
 }
