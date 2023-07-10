@@ -47,6 +47,7 @@ MonoBehaviour:
   - RPC_SendWinner
   - RPC_SetTime
   - RPC_SetMusicToPlayer
+  - RPC_SoundPlay
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0

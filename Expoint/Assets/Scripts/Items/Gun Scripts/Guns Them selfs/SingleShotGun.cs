@@ -28,7 +28,7 @@ public class SingleShotGun : Gun
 
     public override void UseMouse0()
     {
-           Shoot();
+        Shoot();
     }
 
     void Shoot()

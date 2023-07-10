@@ -9,7 +9,7 @@ using TMPro;
 
 public class PauseMenu : MonoBehaviourPunCallbacks
 {
-    [SerializeField] PlayerController playerController;
+    [SerializeField] PlayerController2 playerController2;
 
     [SerializeField] GameObject pauseMenu;
 
@@ -28,8 +28,8 @@ public class PauseMenu : MonoBehaviourPunCallbacks
 
     void Start()
     {
-        pauseMenuSensitivity = playerController.mouseSensitivity;
-        sensitivitySlider.value = playerController.mouseSensitivity * 10;
+        pauseMenuSensitivity = playerController2.mouseSensitivity;
+        sensitivitySlider.value = playerController2.mouseSensitivity * 10;
     }
 
     private void Update()
@@ -47,7 +47,7 @@ public class PauseMenu : MonoBehaviourPunCallbacks
         pauseMenuSensitivity = sensitivitySlider.value / 10;
 
         sensitivitySliderText.text = pauseMenuSensitivity.ToString();
-        playerController.mouseSensitivity = pauseMenuSensitivity;
+        playerController2.mouseSensitivity = pauseMenuSensitivity;
 
     }
 

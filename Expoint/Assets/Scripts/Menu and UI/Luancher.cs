@@ -32,6 +32,9 @@ public class Luancher : MonoBehaviourPunCallbacks
     [SerializeField] Transform roomListContent;
     [SerializeField] Transform playerListContent;
 
+    [SerializeField] Transform playerListTeamA;
+    [SerializeField] Transform playerListTeamB;
+
     [SerializeField] GameObject roomListItemPrefab;
     [SerializeField] GameObject PlayerListItemPrefab;
     [SerializeField] GameObject startGameButton;
@@ -76,7 +79,13 @@ public class Luancher : MonoBehaviourPunCallbacks
             else
                 MaxTimeSliderText.text = $"Match Time: {MaxTimeSlider.value} / {MaxTimeSlider.maxValue}";
         }
+        else if (MenuManager.Instance.ReturnIsOpenMenuName("team room"))
+        {
+
+        }
     }
+
+
 
     public override void OnConnectedToMaster()
     {
@@ -89,6 +98,37 @@ public class Luancher : MonoBehaviourPunCallbacks
     {
         MenuManager.Instance.OpenMenu("title");
         Debug.Log("Joined Lobby");
+    }
+
+    public void CreateTeamRoom()
+    {
+        // if (string.IsNullOrEmpty(roomNameInputField.text))
+        // {
+        //     return;
+        // }
+
+        RoomOptions roomOptions = new RoomOptions()
+        {
+            MaxPlayers = (byte)maxPlayersSlider.value
+        };
+
+        float float1 = (MaxTimeSlider.value == 0 ? 99999 : MaxTimeSlider.value); // stops cringe
+        int int1 = (MaxKillsSlider.value == 0 ? 9999 : (int)MaxKillsSlider.value); // stops early end game
+
+        // room properties
+        Hashtable RoomCustomProps = new Hashtable();
+        RoomCustomProps.Add("MasterTime", float1);
+        RoomCustomProps.Add("MasterKills", int1);
+        RoomCustomProps.Add("MasterCT", 600f);
+        RoomCustomProps.Add("Version", Application.version);
+        roomOptions.CustomRoomProperties = RoomCustomProps;
+        // https://youtu.be/aVUNiJ3MVSg
+
+
+
+        //PhotonNetwork.CreateRoom($"{roomNameInputField.text} - max: {roomOptions.MaxPlayers}", roomOptions);
+        PhotonNetwork.CreateRoom($"ROOM", roomOptions);
+        MenuManager.Instance.OpenMenu("loading");
     }
 
     public void CreateRoom()
@@ -123,14 +163,54 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        // if (Application.version != PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString())
+        // {
+        //     MenuManager.Instance.OpenMenu("error");
+        //     OnJoinRoomFailed(3231, "Versions are not the same!<br>their version: " + PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString() + "<br>Your version: " + Application.version);
+        //     PhotonNetwork.Disconnect();
+        // }
+
+        // MenuManager.Instance.OpenMenu("room");
+        // roomNameText.text = PhotonNetwork.CurrentRoom.Name;
+
+        // playersOutOfMaxPlayersText.text = $"{PhotonNetwork.CurrentRoom.PlayerCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
+
+        // Player[] players = PhotonNetwork.PlayerList;
+
+        // foreach (Player player in players)
+        // {
+        //     if (PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) // see if you can put this in OnPlayerEnteredRoom
+        //     {
+        //         PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 9999).ToString("0000");
+        //     }
+        // }
+
+        // foreach (Transform child in playerListContent)
+        // {
+        //     Destroy(child.gameObject);
+        // }
+
+        // for (int i = 0; i < players.Length; i++)
+        // {
+        //     Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+        // }
+
+        // startGameButton.SetActive(PhotonNetwork.IsMasterClient);
+        // mapSelectionPanel.SetActive(PhotonNetwork.IsMasterClient);
+
+        int teamCount = 0;
+        Dictionary<int, Transform> teams = new Dictionary<int, Transform>();
+        teams.Add(0, playerListTeamA);
+        teams.Add(1, playerListTeamB);
+
         if (Application.version != PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString())
         {
+            PhotonNetwork.Disconnect();
             MenuManager.Instance.OpenMenu("error");
             OnJoinRoomFailed(3231, "Versions are not the same!<br>their version: " + PhotonNetwork.CurrentRoom.CustomProperties["Version"].ToString() + "<br>Your version: " + Application.version);
-            PhotonNetwork.Disconnect();
         }
 
-        MenuManager.Instance.OpenMenu("room");
+        MenuManager.Instance.OpenMenu("team room");
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
 
         playersOutOfMaxPlayersText.text = $"{PhotonNetwork.CurrentRoom.PlayerCount} / {PhotonNetwork.CurrentRoom.MaxPlayers}";
@@ -139,26 +219,129 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         foreach (Player player in players)
         {
-            if (PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) // see if you can put this in OnPlayerEnteredRoom
+            if ((PhotonNetwork.LocalPlayer.NickName == player.NickName && !player.IsLocal) || (PhotonNetwork.LocalPlayer.NickName == string.Empty)) // see if you can put this in OnPlayerEnteredRoom
             {
                 PhotonNetwork.LocalPlayer.NickName = PhotonNetwork.LocalPlayer.NickName + Random.Range(0, 9999).ToString("0000");
             }
         }
 
-        foreach (Transform child in playerListContent)
+        foreach (Transform child in playerListTeamA)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (Transform child in playerListTeamB)
         {
             Destroy(child.gameObject);
         }
 
+
         for (int i = 0; i < players.Length; i++)
         {
-            Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(players[i]);
+            Instantiate(PlayerListItemPrefab, playerListTeamA).GetComponent<PlayerListItem>().SetUp(players[i]);
+
+            Hashtable props = new Hashtable();
+            props.Add("team", 0);
+            players[i].CustomProperties = props;
         }
 
         startGameButton.SetActive(PhotonNetwork.IsMasterClient);
         mapSelectionPanel.SetActive(PhotonNetwork.IsMasterClient);
 
     }
+
+    public void SwichTeams()
+    {
+        int x = (int)PhotonNetwork.LocalPlayer.CustomProperties["team"];
+
+        if (x == 0)
+        {
+            Hashtable props = new Hashtable();
+            props.Add("team", 1);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
+            // foreach (Transform child in playerListTeamB)
+            // {
+            //     PlayerListItem pli = child.GetComponent<PlayerListItem>();
+            //     if (pli.player == PhotonNetwork.LocalPlayer)
+            //     {
+            //         Destroy(child.gameObject);
+            //     }
+            // }
+
+            // Instantiate(PlayerListItemPrefab, playerListTeamA).GetComponent<PlayerListItem>().SetUp(PhotonNetwork.LocalPlayer);
+        }
+        else if (x == 1)
+        {
+            Hashtable props = new Hashtable();
+            props.Add("team", 0);
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
+            // foreach (Transform child in playerListTeamA)
+            // {
+            //     PlayerListItem pli = child.GetComponent<PlayerListItem>();
+            //     if (pli.player == PhotonNetwork.LocalPlayer)
+            //     {
+            //         Destroy(child.gameObject);
+            //     }
+            // }
+
+
+            // Instantiate(PlayerListItemPrefab, playerListTeamB).GetComponent<PlayerListItem>().SetUp(PhotonNetwork.LocalPlayer);
+        }
+    }
+
+
+    public override void OnPlayerPropertiesUpdate(Player target, Hashtable hashtable)
+    {
+        if (hashtable.ContainsKey("team"))
+        {
+            int x = (int)hashtable["team"];
+
+            if (x == 0)
+            {
+                foreach (Transform child in playerListTeamB)
+                {
+                    PlayerListItem PLI = child.GetComponent<PlayerListItem>();
+                    if (PLI.player == target)
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+                foreach (Transform child in playerListTeamA)
+                {
+                    PlayerListItem PLI = child.GetComponent<PlayerListItem>();
+                    if (PLI.player == target)
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+
+                Instantiate(PlayerListItemPrefab, playerListTeamA).GetComponent<PlayerListItem>().SetUp(target);
+            }
+            else if (x == 1)
+            {
+                foreach (Transform child in playerListTeamA)
+                {
+                    PlayerListItem PLI = child.GetComponent<PlayerListItem>();
+                    if (PLI.player == target)
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+                foreach (Transform child in playerListTeamB)
+                {
+                    PlayerListItem PLI = child.GetComponent<PlayerListItem>();
+                    if (PLI.player == target)
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+
+                Instantiate(PlayerListItemPrefab, playerListTeamB).GetComponent<PlayerListItem>().SetUp(target);
+            }
+        }
+    }
+
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
@@ -168,7 +351,7 @@ public class Luancher : MonoBehaviourPunCallbacks
     IEnumerator InstaceButDelayed(Player newPlayer)
     {
         yield return new WaitForSeconds(0.1f);
-        Instantiate(PlayerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().SetUp(newPlayer);
+        Instantiate(PlayerListItemPrefab, playerListTeamA).GetComponent<PlayerListItem>().SetUp(newPlayer);
     }
 
 
@@ -184,6 +367,12 @@ public class Luancher : MonoBehaviourPunCallbacks
     }
 
     public void StartGame()
+    {
+        MenuManager.Instance.OpenMenu("loading");
+        PhotonNetwork.LoadLevel(MapManager.Instance.currentMapNumber);
+    }
+
+    public void StartTeamGame()
     {
         MenuManager.Instance.OpenMenu("loading");
         PhotonNetwork.LoadLevel(MapManager.Instance.currentMapNumber);

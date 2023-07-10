@@ -26,7 +26,7 @@ public class MapManager : MonoBehaviour
 
     void Update()
     {
-        if (!MenuManager.Instance.ReturnIsOpenMenuName("room"))
+        if (!MenuManager.Instance.ReturnIsOpenMenuName("team room"))
             return;
 
     }

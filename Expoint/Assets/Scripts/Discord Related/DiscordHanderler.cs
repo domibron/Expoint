@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Discord;
 using UnityEngine.SceneManagement;
-using Photon.Pun;
 
-public class DiscordHanderler : MonoBehaviourPunCallbacks
+public class DiscordHanderler : MonoBehaviour
 {
     public static DiscordHanderler Instance;
 
@@ -14,8 +13,8 @@ public class DiscordHanderler : MonoBehaviourPunCallbacks
     int retries = 0;
     bool disabled = true;
 
-    //public string details = "None set";
-    //public string state = "None set";
+    public string details = "None set";
+    public string state = "None set";
 
     void Awake()
     {
@@ -80,52 +79,20 @@ public class DiscordHanderler : MonoBehaviourPunCallbacks
 
         discord.RunCallbacks();
 
+        // var activity = new Discord.Activity
+        // {
+        //     Details = "In Room - Waiting to start",
+        //     State = $"room name: {PhotonNetwork.CurrentRoom.Name} \n max players: {PhotonNetwork.CurrentRoom.MaxPlayers} \n players in room: {PhotonNetwork.CurrentRoom.PlayerCount}",
+        // };
+        // acrivityManager.UpdateActivity(activity, (res) =>
+        // {
+        //     if (res == Discord.Result.Ok)
+        //         Debug.Log("Discord Set!");
+        //     else
+        //         Debug.LogError("setting status failed!");
+        // });
 
-        if (SceneManager.GetActiveScene().buildIndex == 0 && PhotonNetwork.InRoom)
-        {
-            var activity = new Discord.Activity
-            {
-                Details = "In Room - Waiting to start",
-                State = $"room name: {PhotonNetwork.CurrentRoom.Name} \n max players: {PhotonNetwork.CurrentRoom.MaxPlayers} \n players in room: {PhotonNetwork.CurrentRoom.PlayerCount}",
-            };
-            acrivityManager.UpdateActivity(activity, (res) =>
-            {
-                if (res == Discord.Result.Ok)
-                    Debug.Log("Discord Set!");
-                else
-                    Debug.LogError("setting status failed!");
-            });
-        }
-        else if (SceneManager.GetActiveScene().buildIndex == 1)
-        {
-            var activity = new Discord.Activity
-            {
-                Details = "In Match",
-                State = $"room name: {PhotonNetwork.CurrentRoom.Name} | max players: {PhotonNetwork.CurrentRoom.MaxPlayers}  players in match: {PhotonNetwork.CurrentRoom.PlayerCount}",
-            };
-            acrivityManager.UpdateActivity(activity, (res) =>
-            {
-                if (res == Discord.Result.Ok)
-                    Debug.Log("Discord Set!");
-                else
-                    Debug.LogError("setting status failed!");
-            });
-        }
-        else
-        {
-            var activity = new Discord.Activity
-            {
-                Details = "On the main menu",
-                State = "chilling on main menu"
-            };
-            acrivityManager.UpdateActivity(activity, (res) =>
-            {
-                if (res == Discord.Result.Ok)
-                    Debug.Log("Discord Set!");
-                else
-                    Debug.LogError("setting status failed!");
-            });
-        }
+
     }
 
     void OnApplicationQuit()

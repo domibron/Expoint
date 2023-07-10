@@ -8,7 +8,7 @@ using TMPro;
 public class PlayerListItem : MonoBehaviourPunCallbacks
 {
     [SerializeField] TMP_Text text;
-    Player player;
+    public Player player;
 
     public void SetUp(Player _player)
     {
