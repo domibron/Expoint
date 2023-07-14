@@ -90,7 +90,7 @@ public class ItemGrid : MonoBehaviour
 
         for (int x = 0; x < inventoryItem.itemData.width; x++)
         {
-            for (int y = 0; y < inventoryItem.itemData.width; y++)
+            for (int y = 0; y < inventoryItem.itemData.height; y++)
             {
                 inventoryItemSlot[posX + x, posY + y] = inventoryItem;
             }
