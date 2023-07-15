@@ -18,49 +18,66 @@ public class PlayerNameManager : MonoBehaviour
         // REWORK AND TESTING REQUIRED
 
         //print(CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn());
-
-        if (CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn())
+        try
         {
-            usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
-            PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
-            PlayerPrefs.SetString("username", usernameInput.text);
-            // PlayerPrefs.Save();
-            OnUsernameValueChanged();
+            if (CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn())
+            {
+                usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+                PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+                PlayerPrefs.SetString("username", usernameInput.text);
+                // PlayerPrefs.Save();
+                OnUsernameValueChanged();
+            }
+            else if (PlayerPrefs.HasKey("username"))
+            {
+                tempHolderForName = "Guest " + Random.Range(0, 100).ToString("0000");
+
+                PhotonNetwork.NickName = tempHolderForName;
+                PlayerPrefs.SetString("username", tempHolderForName);
+                // PlayerPrefs.Save();
+                usernameInput.text = tempHolderForName;
+
+                OnUsernameValueChanged();
+            }
+            else
+            {
+                usernameInput.text = "Guest " + Random.Range(0, 100).ToString("0000");
+                OnUsernameValueChanged();
+            }
+
+
+
+            userInfo.text = $"Logged In as:<br>Username: {CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername()}<br>Confirm: {CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn()}<br><color=\"red\">Connection: --<br>Data Leaks: --";
         }
-        else if (PlayerPrefs.HasKey("username"))
+        catch
         {
-            tempHolderForName = "Guest " + Random.Range(0, 100).ToString("0000");
-
-            PhotonNetwork.NickName = tempHolderForName;
-            PlayerPrefs.SetString("username", tempHolderForName);
-            // PlayerPrefs.Save();
-            usernameInput.text = tempHolderForName;
-
-            OnUsernameValueChanged();
+            usernameInput.text = "<color=red>ERROR</color>";
+            PhotonNetwork.NickName = "<color=red>ERROR</color>";
         }
-        else
-        {
-            usernameInput.text = "Guest " + Random.Range(0, 100).ToString("0000");
-            OnUsernameValueChanged();
-        }
-
-        userInfo.text = $"Logged In as:<br>Username: {CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername()}<br>Confirm: {CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn()}<br><color=\"red\">Connection: --<br>Data Leaks: --";
     }
 
     public void OnUsernameValueChanged()
     {
-        if (CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn())
+        try
         {
-            usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
-            PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
-            PlayerPrefs.SetString("username", usernameInput.text);
-            // PlayerPrefs.Save();
+            if (CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn())
+            {
+                usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+                PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+                PlayerPrefs.SetString("username", usernameInput.text);
+                // PlayerPrefs.Save();
+            }
+            else
+            {
+                usernameInput.text = tempHolderForName;
+                PhotonNetwork.NickName = tempHolderForName;
+                //PlayerPrefs.SetString("username", usernameInput.text);
+            }
         }
-        else
+        catch
         {
-            usernameInput.text = tempHolderForName;
-            PhotonNetwork.NickName = tempHolderForName;
-            //PlayerPrefs.SetString("username", usernameInput.text);
+            usernameInput.text = "<color=red>ERROR</color>";
+            PhotonNetwork.NickName = "<color=red>ERROR</color>";
         }
     }
 }

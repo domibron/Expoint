@@ -8,8 +8,43 @@ public class InventoryItem : MonoBehaviour
 {
     public ItemData itemData;
 
+    public int HEIGHT
+    {
+        get
+        {
+            if (rotated == false)
+            {
+                return itemData.height;
+            }
+            return itemData.width;
+        }
+    }
+
+    public int WIDTH
+    {
+        get
+        {
+            if (rotated == false)
+            {
+                return itemData.width;
+            }
+            return itemData.height;
+        }
+    }
+
     public int OnGridPositionX;
     public int OnGridPositionY;
+
+    public bool rotated = false;
+
+    internal void Rotate()
+    {
+        rotated = !rotated;
+
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        rectTransform.rotation = Quaternion.Euler(0, 0, rotated == true ? -90f : 0f);
+
+    }
 
     internal void Set(ItemData itemData)
     {

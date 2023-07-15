@@ -26,7 +26,7 @@ public class Settings : MonoBehaviour
 
     void Update()
     {
-        
+
 
         //Screen.SetResolution(int.Parse(x.text), int.Parse(y.text), Screen.fullScreen);
     }
@@ -41,7 +41,8 @@ public class Settings : MonoBehaviour
 
     void SetScreen()
     {
-        Screen.SetResolution(resolution.width, resolution.height, screenMode, 60);
+        // WTH is this UNITY!!!! https://docs.unity3d.com/ScriptReference/Screen.SetResolution.html WHY DID YOU NEED TO CHANGE THIS!!
+        Screen.SetResolution(resolution.width, resolution.height, screenMode, new RefreshRate() { numerator = 60, denominator = 1 });
     }
 
     void ResolutionSet()
