@@ -22,28 +22,6 @@ public class ItemGrid : MonoBehaviour
         Init(gridSizeWidth, gridSizeHeight);
     }
 
-    string str = "";
-
-    void Update()
-    {
-        str = "";
-
-        for (int i = 0; i < gridSizeHeight; i++)
-        {
-            if (i > 0)
-            {
-                str += "\n";
-            }
-            for (int x = 0; x < gridSizeWidth; x++)
-            {
-                str += $"{x} {i} = " + inventoryItemSlots[x, i] == null ? "null" : $"{inventoryItemSlots[x, i].name}";
-            }
-
-        }
-
-        print(str);
-    }
-
     public InventoryItem PickUpItem(int x, int y)
     {
         InventoryItem toReturn = inventoryItemSlots[x, y];

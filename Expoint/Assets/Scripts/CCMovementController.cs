@@ -29,6 +29,8 @@ public class CCMovementController : MonoBehaviour, IWASDInput, ISpaceInput, ILef
 
     float MovementSpeedAditive;
 
+    bool isGrounded = false;
+
     void Awake()
     {
         CC = GetComponent<CharacterController>();
@@ -44,6 +46,8 @@ public class CCMovementController : MonoBehaviour, IWASDInput, ISpaceInput, ILef
         HandleMovement();
 
         HandleGravity();
+
+        HandleGroundCheck();
     }
 
     private void HandleMovement()
@@ -57,7 +61,7 @@ public class CCMovementController : MonoBehaviour, IWASDInput, ISpaceInput, ILef
 
     private void HandleGravity()
     {
-        if (CC.isGrounded && velocity.y < 0)
+        if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
@@ -187,6 +191,18 @@ public class CCMovementController : MonoBehaviour, IWASDInput, ISpaceInput, ILef
         fourAxisOfMovement.Add(new bool[] { true, true, true, true }, "All Inputs");
     }
 
+    void HandleGroundCheck()
+    {
+        if (CC.isGrounded && Physics.Raycast(transform.position, -transform.up, 1.1f))
+        {
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+    }
+
     void IWASDInput.W_Key_Held(bool b)
     {
         CurrentInput[0] = b;
@@ -209,7 +225,7 @@ public class CCMovementController : MonoBehaviour, IWASDInput, ISpaceInput, ILef
 
     void ISpaceInput.Space_Key_Pressed()
     {
-        if (CC.isGrounded)
+        if (isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }

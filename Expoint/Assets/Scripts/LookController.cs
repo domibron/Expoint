@@ -19,6 +19,11 @@ public class LookController : MonoBehaviour, IMouseInput
         cam = Camera.main.gameObject;
     }
 
+    void Start()
+    {
+        //Cursor.lockState = CursorLockMode.Locked; // ! remove
+    }
+
     void Update()
     {
         LookContols();

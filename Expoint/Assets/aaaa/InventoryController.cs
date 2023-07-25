@@ -25,6 +25,7 @@ public class InventoryController : MonoBehaviour
     [SerializeField] List<ItemData> items;
     [SerializeField] GameObject itemPrefab;
     [SerializeField] Transform canvasTransform;
+    [SerializeField] GameObject itemObjectPrefab;
 
     List<ItemGrid> AllItemGrids = new List<ItemGrid>();
 
@@ -34,6 +35,7 @@ public class InventoryController : MonoBehaviour
     {
         inventoryHighlight = GetComponent<InventoryHighlight>();
 
+        // ? was this me? ~ yes
         foreach (ItemGrid _itemGrid in canvasTransform.GetComponentsInChildren<ItemGrid>())
         {
             AllItemGrids.Add(_itemGrid);
@@ -44,34 +46,40 @@ public class InventoryController : MonoBehaviour
     {
         ItemIconDrag();
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (selectedItem == null)
-            {
-                CreateRandomItem();
-            }
-        }
+        // if (Input.GetKeyDown(KeyCode.Q)) // ! replace
+        // {
+        //     if (selectedItem == null)
+        //     {
+        //         CreateRandomItem();
+        //     }
+        // }
 
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            if (selectedItem == null)
-                InsertRandomItem();
-        }
+        // if (Input.GetKeyDown(KeyCode.W)) // ! replace
+        // {
+        //     if (selectedItem == null)
+        //         InsertRandomItem();
+        // }
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R)) // ! replace
         {
             RotateItem();
+        }
+
+        if (Input.GetMouseButtonDown(0) && selectedItemGrid == null && selectedItem != null)
+        {
+            // TODO move into its own function.
+            DropItemObject(selectedItem.itemData);
         }
 
         if (selectedItemGrid == null)
         {
             inventoryHighlight.Show(false);
-            return;
+            return; // ! A return is here, this stops the programe here.
         }
 
         HandleHighlight();
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0)) // ! replace
         {
             LeftMouseButtonPress();
         }
@@ -84,6 +92,44 @@ public class InventoryController : MonoBehaviour
         selectedItem.Rotate();
     }
 
+    private void DropItemObject(ItemData item)
+    {
+        ObjectItemData objectItemData = Instantiate(itemObjectPrefab, transform.position + transform.forward, Quaternion.identity).GetComponent<ObjectItemData>();
+        objectItemData.itemData = item;
+
+
+        Destroy(selectedItem.gameObject);
+        selectedItem = null;
+    }
+
+    public bool PickUpItemObject(ItemData item) // me
+    {
+        CreateItemPrefab(item);
+        InventoryItem itemToInsert = selectedItem;
+        selectedItem = null;
+
+        bool b = false;
+
+        for (int i = 0; i < AllItemGrids.Count; i++)
+        {
+            b = TryToInsertItem(itemToInsert, AllItemGrids[i]);
+            if (b)
+            {
+                break;
+            }
+        }
+
+        if (!b)
+        {
+            Destroy(itemToInsert.gameObject);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     private void InsertRandomItem()
     {
         if (selectedItemGrid == null) { return; }
@@ -94,11 +140,26 @@ public class InventoryController : MonoBehaviour
         InsertItem(itemToInsert);
     }
 
+    private bool TryToInsertItem(InventoryItem itemToInsert, ItemGrid itemGrid) // me
+    {
+        Vector2Int? posOnGrid = itemGrid.FindSpaceForObject(itemToInsert);
+
+        if (posOnGrid == null)
+        {
+            return false;
+        }
+
+        // might cause issues.
+        itemGrid.PlaceItem(itemToInsert, posOnGrid.Value.x, posOnGrid.Value.y);
+
+        return true;
+    }
+
     private void InsertItem(InventoryItem itemToInsert)
     {
         Vector2Int? posOnGrid = selectedItemGrid.FindSpaceForObject(itemToInsert);
 
-        print(posOnGrid == null ? "null" : posOnGrid.Value);
+        //print(posOnGrid == null ? "null" : posOnGrid.Value);
 
         if (posOnGrid == null)
         {
@@ -165,6 +226,19 @@ public class InventoryController : MonoBehaviour
 
 
     }
+
+    private void CreateItemPrefab(ItemData itemData) // me
+    {
+        InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+        selectedItem = inventoryItem;
+
+        rectTransform = inventoryItem.GetComponent<RectTransform>();
+        rectTransform.SetParent(canvasTransform);
+        rectTransform.SetAsLastSibling();
+
+        inventoryItem.Set(itemData);
+    }
+
 
     private void LeftMouseButtonPress()
     {
