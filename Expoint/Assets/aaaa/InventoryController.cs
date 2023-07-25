@@ -26,11 +26,18 @@ public class InventoryController : MonoBehaviour
     [SerializeField] GameObject itemPrefab;
     [SerializeField] Transform canvasTransform;
 
+    List<ItemGrid> AllItemGrids = new List<ItemGrid>();
+
     InventoryHighlight inventoryHighlight;
 
     void Awake()
     {
         inventoryHighlight = GetComponent<InventoryHighlight>();
+
+        foreach (ItemGrid _itemGrid in canvasTransform.GetComponentsInChildren<ItemGrid>())
+        {
+            AllItemGrids.Add(_itemGrid);
+        }
     }
 
     void Update()
@@ -206,7 +213,11 @@ public class InventoryController : MonoBehaviour
     {
         selectedItem = selectedItemGrid.PickUpItem(tileGridPosition.x, tileGridPosition.y);
         if (selectedItem != null)
+        {
             rectTransform = selectedItem.GetComponent<RectTransform>();
+            rectTransform.SetParent(rectTransform.parent.parent); // set the item to the front of the inventory
+            rectTransform.SetAsLastSibling();
+        }
     }
 
     private void ItemIconDrag()

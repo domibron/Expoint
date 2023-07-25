@@ -95,7 +95,7 @@ public class LoginManager : MonoBehaviour
             loadedSucsess = true;
 
             print("<color=yellow>GAME CONNECTED!!" + CloudLogin.GetGameId() + "</color>");
-            print("Store Items: noinoasnosdnoadonasdnoasnoda");
+            print("Store Items: disabled");
             print("*****************************************");
 
 

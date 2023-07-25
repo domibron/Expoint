@@ -22,11 +22,23 @@ public class PlayerNameManager : MonoBehaviour
         {
             if (CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn())
             {
-                usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
-                PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
-                PlayerPrefs.SetString("username", usernameInput.text);
-                // PlayerPrefs.Save();
-                OnUsernameValueChanged();
+                if (CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername() == "domibron")
+                {
+                    usernameInput.text = $"<color=yellow>{CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername()}</color>";
+                    PhotonNetwork.NickName = $"<color=yellow>{CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername()}</color>";
+                    PlayerPrefs.SetString("username", usernameInput.text);
+                    // PlayerPrefs.Save();
+                    print("hello domibron");
+                    OnUsernameValueChanged();
+                }
+                else
+                {
+                    usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+                    PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+                    PlayerPrefs.SetString("username", usernameInput.text);
+                    // PlayerPrefs.Save();
+                    OnUsernameValueChanged();
+                }
             }
             else if (PlayerPrefs.HasKey("username"))
             {
@@ -62,10 +74,19 @@ public class PlayerNameManager : MonoBehaviour
         {
             if (CloudLoginUnity.CloudLoginUser.CurrentUser.IsSignedIn())
             {
-                usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
-                PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
-                PlayerPrefs.SetString("username", usernameInput.text);
-                // PlayerPrefs.Save();
+                if (CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername() == "domibron")
+                {
+                    usernameInput.text = $"<color=yellow>{CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername()}</color>";
+                    PhotonNetwork.NickName = $"<color=yellow>{CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername()}</color>";
+                    PlayerPrefs.SetString("username", usernameInput.text);
+                    // PlayerPrefs.Save();
+                }
+                else
+                {
+                    usernameInput.text = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+                    PhotonNetwork.NickName = CloudLoginUnity.CloudLoginUser.CurrentUser.GetUsername();
+                    PlayerPrefs.SetString("username", usernameInput.text);
+                }
             }
             else
             {

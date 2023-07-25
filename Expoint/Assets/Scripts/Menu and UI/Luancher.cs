@@ -53,7 +53,7 @@ public class Luancher : MonoBehaviourPunCallbacks
 
         Debug.Log("connecting to Lobby");
         PhotonNetwork.ConnectUsingSettings();
-        versionText.text = $"{Application.version}<br>Created by domibron<br>https://domibron.itch.io/multiplayer-game";
+        versionText.text = $"{Application.version}<br>Created by domibron<br>https://domibron.itch.io/expoint";
     }
 
     void Update()
@@ -198,7 +198,7 @@ public class Luancher : MonoBehaviourPunCallbacks
         // startGameButton.SetActive(PhotonNetwork.IsMasterClient);
         // mapSelectionPanel.SetActive(PhotonNetwork.IsMasterClient);
 
-        int teamCount = 0;
+        int teamCount = 0; // ? what is this ment for?
         Dictionary<int, Transform> teams = new Dictionary<int, Transform>();
         teams.Add(0, playerListTeamA);
         teams.Add(1, playerListTeamB);
