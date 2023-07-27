@@ -8,6 +8,10 @@ public class InventoryItem : MonoBehaviour
 {
     public ItemData itemData;
 
+    public StorageData storageData;
+
+    public ItemDataStore Data;
+
     public int HEIGHT
     {
         get
@@ -43,12 +47,14 @@ public class InventoryItem : MonoBehaviour
 
         RectTransform rectTransform = GetComponent<RectTransform>();
         rectTransform.rotation = Quaternion.Euler(0, 0, rotated == true ? -90f : 0f);
+        Data.Rotated = rotated;
 
     }
 
     internal void Set(ItemData itemData)
     {
         this.itemData = itemData;
+        Data.itemData = itemData;
 
         GetComponent<Image>().sprite = itemData.itemIcon;
 

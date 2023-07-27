@@ -233,6 +233,24 @@ public partial class @MasterInputSystem: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftMouseButton"",
+                    ""type"": ""Button"",
+                    ""id"": ""2e6f7f4d-e4c4-4a66-97eb-32f03f56d203"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightMouseButton"",
+                    ""type"": ""Button"",
+                    ""id"": ""f8852358-f668-4cda-9fdb-eac8d432946b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -488,6 +506,28 @@ public partial class @MasterInputSystem: IInputActionCollection2, IDisposable
                     ""action"": ""B"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""44111d3d-11fc-4523-abf6-d307d03bb5bc"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftMouseButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb9ff4b3-c823-47f9-b60a-c6292f3831c0"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightMouseButton"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -519,6 +559,8 @@ public partial class @MasterInputSystem: IInputActionCollection2, IDisposable
         m_Player_G = m_Player.FindAction("G", throwIfNotFound: true);
         m_Player_T = m_Player.FindAction("T", throwIfNotFound: true);
         m_Player_B = m_Player.FindAction("B", throwIfNotFound: true);
+        m_Player_LeftMouseButton = m_Player.FindAction("LeftMouseButton", throwIfNotFound: true);
+        m_Player_RightMouseButton = m_Player.FindAction("RightMouseButton", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -603,6 +645,8 @@ public partial class @MasterInputSystem: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_G;
     private readonly InputAction m_Player_T;
     private readonly InputAction m_Player_B;
+    private readonly InputAction m_Player_LeftMouseButton;
+    private readonly InputAction m_Player_RightMouseButton;
     public struct PlayerActions
     {
         private @MasterInputSystem m_Wrapper;
@@ -630,6 +674,8 @@ public partial class @MasterInputSystem: IInputActionCollection2, IDisposable
         public InputAction @G => m_Wrapper.m_Player_G;
         public InputAction @T => m_Wrapper.m_Player_T;
         public InputAction @B => m_Wrapper.m_Player_B;
+        public InputAction @LeftMouseButton => m_Wrapper.m_Player_LeftMouseButton;
+        public InputAction @RightMouseButton => m_Wrapper.m_Player_RightMouseButton;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -708,6 +754,12 @@ public partial class @MasterInputSystem: IInputActionCollection2, IDisposable
             @B.started += instance.OnB;
             @B.performed += instance.OnB;
             @B.canceled += instance.OnB;
+            @LeftMouseButton.started += instance.OnLeftMouseButton;
+            @LeftMouseButton.performed += instance.OnLeftMouseButton;
+            @LeftMouseButton.canceled += instance.OnLeftMouseButton;
+            @RightMouseButton.started += instance.OnRightMouseButton;
+            @RightMouseButton.performed += instance.OnRightMouseButton;
+            @RightMouseButton.canceled += instance.OnRightMouseButton;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -781,6 +833,12 @@ public partial class @MasterInputSystem: IInputActionCollection2, IDisposable
             @B.started -= instance.OnB;
             @B.performed -= instance.OnB;
             @B.canceled -= instance.OnB;
+            @LeftMouseButton.started -= instance.OnLeftMouseButton;
+            @LeftMouseButton.performed -= instance.OnLeftMouseButton;
+            @LeftMouseButton.canceled -= instance.OnLeftMouseButton;
+            @RightMouseButton.started -= instance.OnRightMouseButton;
+            @RightMouseButton.performed -= instance.OnRightMouseButton;
+            @RightMouseButton.canceled -= instance.OnRightMouseButton;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -823,5 +881,7 @@ public partial class @MasterInputSystem: IInputActionCollection2, IDisposable
         void OnG(InputAction.CallbackContext context);
         void OnT(InputAction.CallbackContext context);
         void OnB(InputAction.CallbackContext context);
+        void OnLeftMouseButton(InputAction.CallbackContext context);
+        void OnRightMouseButton(InputAction.CallbackContext context);
     }
 }

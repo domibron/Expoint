@@ -14,6 +14,7 @@ public class InputManager : MonoBehaviour
     ILeftShiftInput? _ILeftShiftInput;
     IMouseInput? _IMouseInput;
     IFKeyInput? _IFKeyInput;
+    IMouseLeftClickPress? _IMouseLeftClickPress;
 #nullable restore
 
 
@@ -27,6 +28,7 @@ public class InputManager : MonoBehaviour
         _ILeftShiftInput = GetComponent<ILeftShiftInput>();
         _IMouseInput = GetComponent<IMouseInput>();
         _IFKeyInput = GetComponent<IFKeyInput>();
+        _IMouseLeftClickPress = GetComponent<IMouseLeftClickPress>();
     }
 
     void OnEnable()
@@ -70,6 +72,17 @@ public class InputManager : MonoBehaviour
         {
             Key_F_Detection_Pressed();
         }
+
+        if (_IMouseLeftClickPress != null)
+        {
+            Left_Mouse_Button_Pressed();
+        }
+    }
+
+    private void Left_Mouse_Button_Pressed()
+    {
+        if (input.Player.LeftMouseButton.WasPressedThisFrame()) _IMouseLeftClickPress.left_Mouse_Button_Pressed(true);
+        else _IMouseLeftClickPress.left_Mouse_Button_Pressed(false);
     }
 
     private void Key_F_Detection_Pressed()

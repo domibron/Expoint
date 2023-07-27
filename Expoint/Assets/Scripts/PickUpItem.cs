@@ -26,9 +26,9 @@ public class PickUpItem : MonoBehaviour, IFKeyInput
 
         if (hit.transform.GetComponent<ObjectItemData>() != null)
         {
-            ItemData itemData = hit.transform.GetComponent<ObjectItemData>().itemData;
+            ObjectItemData objData = hit.transform.GetComponent<ObjectItemData>();
 
-            if (inventoryController.PickUpItemObject(itemData))
+            if (inventoryController.PickUpItemObject(objData))
             {
                 Destroy(hit.transform.gameObject);
             }

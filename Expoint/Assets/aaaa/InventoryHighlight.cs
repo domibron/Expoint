@@ -39,4 +39,18 @@ public class InventoryHighlight : MonoBehaviour
 
         highlighter.localPosition = pos;
     }
+
+    public void SetPosition(ItemSlot targetSlot, InventoryItem targetItem)
+    {
+        Vector2 pos = targetSlot.CalculateCenter(targetItem);
+
+        highlighter.localPosition = pos;
+
+    }
+
+    public void SetParent(ItemSlot targetSlot)
+    {
+        if (targetSlot == null) { return; }
+        highlighter.SetParent(targetSlot.GetComponent<RectTransform>());
+    }
 }

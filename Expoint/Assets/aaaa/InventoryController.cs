@@ -3,10 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryController : MonoBehaviour
+public class InventoryController : MonoBehaviour, IMouseLeftClickPress
 {
+    bool _LeftMouseButtonPressed = false;
+
+    bool _revealInventory = false;
+
     [HideInInspector]
     private ItemGrid selectedItemGrid;
+
+    [HideInInspector]
+    private ItemSlot selectedItemSlot;
 
     public ItemGrid SelectedItemGrid
     {
@@ -18,28 +25,44 @@ public class InventoryController : MonoBehaviour
         }
     }
 
+    public ItemSlot SelectedItemSlot
+    {
+        get => selectedItemSlot;
+        set
+        {
+            selectedItemSlot = value;
+            inventoryHighlight.SetParent(value);
+        }
+    }
+
     InventoryItem selectedItem;
     InventoryItem overlapItem;
     RectTransform rectTransform;
 
+    [SerializeField] CanvasGroup InventoyCanvasGroup;
     [SerializeField] List<ItemData> items;
     [SerializeField] GameObject itemPrefab;
     [SerializeField] Transform canvasTransform;
     [SerializeField] GameObject itemObjectPrefab;
 
-    List<ItemGrid> AllItemGrids = new List<ItemGrid>();
+    public List<ItemGrid> AllItemGrids = new List<ItemGrid>();
 
     InventoryHighlight inventoryHighlight;
 
     void Awake()
     {
         inventoryHighlight = GetComponent<InventoryHighlight>();
+    }
 
-        // ? was this me? ~ yes
+    void Start()
+    {
+        // me. // collecting all the grids. This will cause errors if you do not remove grid from here when you delete the grid.
         foreach (ItemGrid _itemGrid in canvasTransform.GetComponentsInChildren<ItemGrid>())
         {
             AllItemGrids.Add(_itemGrid);
         }
+
+        ToggleInventory(_revealInventory);
     }
 
     void Update()
@@ -54,35 +77,113 @@ public class InventoryController : MonoBehaviour
         //     }
         // }
 
-        // if (Input.GetKeyDown(KeyCode.W)) // ! replace
-        // {
-        //     if (selectedItem == null)
-        //         InsertRandomItem();
-        // }
+        if (Input.GetKeyDown(KeyCode.W)) // ! replace
+        {
+            if (selectedItem == null)
+                InsertRandomItem();
+        }
+
+        if (Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.Tab))
+        {
+            _revealInventory = !_revealInventory;
+            ToggleInventory(_revealInventory);
+        }
 
         if (Input.GetKeyDown(KeyCode.R)) // ! replace
         {
             RotateItem();
         }
 
-        if (Input.GetMouseButtonDown(0) && selectedItemGrid == null && selectedItem != null)
-        {
-            // TODO move into its own function.
-            DropItemObject(selectedItem.itemData);
-        }
+        // if (_LeftMouseButtonPressed && selectedItemGrid == null && selectedItemSlot == null && selectedItem != null)
+        // {
+        // 	// TODO move into its own function. ?
+        // 	DropItemObject(selectedItem);
+        // }
 
-        if (selectedItemGrid == null)
+
+        if (selectedItemGrid == null && selectedItemSlot == null)
         {
+            if (_LeftMouseButtonPressed)
+            {
+                // TODO move into its own function. ?
+                DropItemObject(selectedItem);
+            }
+
             inventoryHighlight.Show(false);
-            return; // ! A return is here, this stops the programe here.
+            return; // ! A return is here, this stops the programe here. ================================== <<<<
         }
 
         HandleHighlight();
 
-        if (Input.GetMouseButtonDown(0)) // ! replace
+        if (_LeftMouseButtonPressed)
         {
             LeftMouseButtonPress();
         }
+    }
+
+    public void MoveItem(GameObject go, Transform parent)
+    {
+        rectTransform = go.GetComponent<RectTransform>();
+        rectTransform.SetParent(parent);
+        rectTransform.SetAsLastSibling();
+    }
+
+    public InventoryItem CreateItem(ItemData item, Transform parent)
+    {
+        InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+
+        rectTransform = inventoryItem.GetComponent<RectTransform>();
+        rectTransform.SetParent(parent);
+        rectTransform.SetAsLastSibling();
+
+        inventoryItem.Set(item);
+
+        // inventoryItem = item;
+
+        //inventoryItem.itemData.Data.Store_Objects = new List<ItemData>();
+
+        // TODO if the item has storage, then it should generate data for storage. AHHHHh neeed to look at this and check if what needs to be done.
+        // if there is set data or how is data set, what if a item has data?
+        inventoryItem.Data.itemData = inventoryItem.itemData;
+
+        if (inventoryItem.itemData.ItemType == ItemType.backpack || inventoryItem.itemData.ItemType == ItemType.armor)
+        {
+            if (inventoryItem.storageData.Store_ItemDataStore == null)
+            {
+                inventoryItem.storageData.Store_ItemDataStore = new List<ItemDataStore>();
+            }
+
+            if (inventoryItem.storageData.Store_InventoryItemSlots == null)
+            {
+                inventoryItem.storageData.Store_InventoryItemSlots = new InventoryItem[inventoryItem.itemData.SorageWidth, inventoryItem.itemData.SorageHeight];
+            }
+        }
+
+        return inventoryItem;
+    }
+
+    private void ToggleInventory(bool b)
+    {
+        if (b) // use  ? : if statement can be used
+        {
+            InventoyCanvasGroup.alpha = 1;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            InventoyCanvasGroup.alpha = 0;
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+
+            if (selectedItem != null)
+            {
+                DropItemObject(selectedItem);
+            }
+        }
+
+        InventoyCanvasGroup.interactable = b;
+        InventoyCanvasGroup.blocksRaycasts = b;
     }
 
     private void RotateItem()
@@ -92,21 +193,28 @@ public class InventoryController : MonoBehaviour
         selectedItem.Rotate();
     }
 
-    private void DropItemObject(ItemData item)
+    public void DropItemObject(InventoryItem item)
     {
         ObjectItemData objectItemData = Instantiate(itemObjectPrefab, transform.position + transform.forward, Quaternion.identity).GetComponent<ObjectItemData>();
-        objectItemData.itemData = item;
+        objectItemData.itemData = item.itemData;
+        objectItemData.Data = item.Data;
+        objectItemData.storageData = item.storageData;
 
 
         Destroy(selectedItem.gameObject);
         selectedItem = null;
+
     }
 
-    public bool PickUpItemObject(ItemData item) // me
+    public bool PickUpItemObject(ObjectItemData objectItemData) // me
     {
-        CreateItemPrefab(item);
+        CreateItemPrefab(objectItemData.itemData);
         InventoryItem itemToInsert = selectedItem;
         selectedItem = null;
+
+        itemToInsert.Data = objectItemData.Data;
+        itemToInsert.storageData = objectItemData.storageData;
+
 
         bool b = false;
 
@@ -164,7 +272,7 @@ public class InventoryController : MonoBehaviour
         if (posOnGrid == null)
         {
             // remove item as I cannot fit it in. but could do a on pick up failed.
-            Destroy(itemToInsert.gameObject); // could make a check into a drop the item as inventory is full
+            Destroy(itemToInsert.gameObject); // ! could make a check into a drop the item as inventory is full
             return;
         }
 
@@ -172,16 +280,35 @@ public class InventoryController : MonoBehaviour
     }
 
     Vector2Int oldPosition;
+    Vector2 oldSlotPos;
     InventoryItem itemToHighlight;
 
     private void HandleHighlight()
     {
-        Vector2Int positionOnGrid = GetTileGridPosition();
+        Vector2 posOnSlot = Vector2.zero;
+        Vector2Int positionOnGrid = Vector2Int.zero;
+        if (selectedItemSlot != null)
+        {
+            posOnSlot = GetSlotPos();
 
-        if (oldPosition == positionOnGrid) { return; }
+            //if (oldSlotPos == posOnSlot) { return; }
 
-        oldPosition = positionOnGrid;
-        if (selectedItem == null)
+            oldSlotPos = posOnSlot;
+
+        }
+        else if (selectedItemGrid != null)
+        {
+            positionOnGrid = GetTileGridPosition();
+
+            if (oldPosition == positionOnGrid) { return; }
+
+            oldPosition = positionOnGrid;
+        }
+
+
+
+
+        if (selectedItem == null && SelectedItemSlot == null)
         {
             itemToHighlight = selectedItemGrid.GetItem(positionOnGrid.x, positionOnGrid.y);
 
@@ -200,7 +327,24 @@ public class InventoryController : MonoBehaviour
                 inventoryHighlight.Show(false);
             }
         }
-        else // while holding
+        else if (selectedItem == null && SelectedItemSlot != null)
+        {
+            itemToHighlight = selectedItemSlot.GetItem();
+
+            if (itemToHighlight != null)
+            {
+                inventoryHighlight.Show(true);
+
+                inventoryHighlight.SetSize(itemToHighlight);
+
+                inventoryHighlight.SetPosition(selectedItemSlot, itemToHighlight);
+            }
+            else
+            {
+                inventoryHighlight.Show(false);
+            }
+        }
+        else if (selectedItem != null && selectedItemSlot == null) // while holding
         {
             inventoryHighlight.Show(selectedItemGrid.BoundryCheck(positionOnGrid.x, positionOnGrid.y, selectedItem.WIDTH, selectedItem.HEIGHT));
 
@@ -209,6 +353,18 @@ public class InventoryController : MonoBehaviour
             // inventoryHighlight.SetParent(selectedItemGrid);
 
             inventoryHighlight.SetPosition(selectedItemGrid, selectedItem, positionOnGrid.x, positionOnGrid.y);
+        }
+        else if (selectedItem != null && selectedItemSlot != null)
+        {
+            inventoryHighlight.Show(selectedItemSlot != null);
+
+            inventoryHighlight.SetSize(selectedItem);
+
+            inventoryHighlight.SetPosition(selectedItemSlot, selectedItem);
+        }
+        else
+        {
+            print("!!! no sutible statment, please fix");
         }
     }
 
@@ -224,6 +380,22 @@ public class InventoryController : MonoBehaviour
         int selectedItemID = UnityEngine.Random.Range(0, items.Count);
         inventoryItem.Set(items[selectedItemID]);
 
+        // TODO if the item has storage, then it should generate data for storage.
+        inventoryItem.Data.itemData = inventoryItem.itemData;
+
+        if (items[selectedItemID].ItemType == ItemType.backpack || items[selectedItemID].ItemType == ItemType.armor)
+        {
+            if (inventoryItem.storageData.Store_ItemDataStore == null)
+            {
+                inventoryItem.storageData.Store_ItemDataStore = new List<ItemDataStore>();
+            }
+
+            if (inventoryItem.storageData.Store_InventoryItemSlots == null)
+            {
+                inventoryItem.storageData.Store_InventoryItemSlots = new InventoryItem[inventoryItem.itemData.SorageWidth, inventoryItem.itemData.SorageHeight];
+            }
+        }
+
 
     }
 
@@ -237,11 +409,35 @@ public class InventoryController : MonoBehaviour
         rectTransform.SetAsLastSibling();
 
         inventoryItem.Set(itemData);
+        inventoryItem.Data.itemData = inventoryItem.itemData;
+
+        if (inventoryItem.storageData.Store_InventoryItemSlots == null)
+        {
+            inventoryItem.storageData.Store_InventoryItemSlots = new InventoryItem[inventoryItem.itemData.SorageWidth, inventoryItem.itemData.SorageHeight];
+        }
+
+        if (inventoryItem.storageData.Store_ItemDataStore == null)
+        {
+            inventoryItem.storageData.Store_ItemDataStore = new List<ItemDataStore>();
+        }
     }
 
 
     private void LeftMouseButtonPress()
     {
+        if (selectedItemSlot != null)
+        {
+            if (selectedItem == null)
+            {
+                PickUpItemOnSlot();
+            }
+            else
+            {
+                PlaceItemOnSlot();
+            }
+            return;
+        }
+
         Vector2Int tileGridPosition = GetTileGridPosition();
 
         if (selectedItem == null)
@@ -265,6 +461,46 @@ public class InventoryController : MonoBehaviour
         }
 
         return selectedItemGrid.GetTileGridPosition(position);
+    }
+
+    private Vector2 GetSlotPos()
+    {
+        Vector2 position = Input.mousePosition;
+
+        // if (selectedItem != null)
+        // {
+        //     position.x -= (selectedItem.WIDTH - 1) * ItemGrid.tileSizeWidth / 2;
+        //     position.y += (selectedItem.HEIGHT - 1) * ItemGrid.tileSizeHeight / 2;
+        // }
+
+        return selectedItemSlot.CalculateCenter();
+    }
+
+    private void PlaceItemOnSlot()
+    {
+        bool complete = selectedItemSlot.PlaceItem(selectedItem, ref overlapItem);
+        if (complete)
+        {
+            selectedItem = null;
+            if (overlapItem != null)
+            {
+                selectedItem = overlapItem;
+                overlapItem = null;
+                rectTransform = selectedItem.GetComponent<RectTransform>();
+                rectTransform.SetAsLastSibling();
+            }
+        }
+    }
+
+    private void PickUpItemOnSlot()
+    {
+        selectedItem = selectedItemSlot.PickUpItem();
+        if (selectedItem != null)
+        {
+            rectTransform = selectedItem.GetComponent<RectTransform>();
+            rectTransform.SetParent(rectTransform.parent.parent); // set the item to the front of the inventory
+            rectTransform.SetAsLastSibling();
+        }
     }
 
     private void PlaceItem(Vector2Int tileGridPosition)
@@ -300,5 +536,10 @@ public class InventoryController : MonoBehaviour
         {
             rectTransform.position = Input.mousePosition;
         }
+    }
+
+    void IMouseLeftClickPress.left_Mouse_Button_Pressed(bool b)
+    {
+        _LeftMouseButtonPressed = b;
     }
 }

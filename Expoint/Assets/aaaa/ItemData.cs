@@ -9,4 +9,9 @@ public class ItemData : ScriptableObject
     public int height = 1;
 
     public Sprite itemIcon;
+
+    public ItemType ItemType = ItemType.item;
+
+    public int SorageWidth = 1;
+    public int SorageHeight = 1;
 }

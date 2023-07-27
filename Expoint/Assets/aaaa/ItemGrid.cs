@@ -11,15 +11,51 @@ public class ItemGrid : MonoBehaviour
     // Multi-dimensional array x and y first part of the arry. the second is in Init.
     InventoryItem[,] inventoryItemSlots;
 
-
     [SerializeField] int gridSizeWidth = 20;
     [SerializeField] int gridSizeHeight = 10;
 
     RectTransform rectTransform;
-    void Start()
+
+    public bool IsAStorageItem = false;
+    public StorageData _StorageData;
+    // public ItemDataStore _ItemDataStore;
+
+    void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         Init(gridSizeWidth, gridSizeHeight);
+    }
+
+    void Start()
+    {
+        _StorageData = new StorageData();
+        ResetLocalStorageData();
+        // _StorageData.Store_InventoryItemSlots = new Array[,];
+        // _StorageData.Store_ItemDataStore = new List<ItemDataStore>();
+        // _StorageData.ItemsInStore = new List<InventoryItem>();
+        // print(_StorageData.Store_ItemData.Count);
+    }
+
+    public void ResetLocalStorageData()
+    {
+        _StorageData.Store_InventoryItemSlots = new InventoryItem[1, 1];
+        _StorageData.Store_ItemDataStore = new List<ItemDataStore>();
+    }
+
+    public void SetLocalStorageData(StorageData storageData, ItemData itemData)
+    {
+        _StorageData.Store_InventoryItemSlots = new InventoryItem[itemData.SorageWidth, itemData.SorageHeight];
+        _StorageData.Store_ItemDataStore = storageData.Store_ItemDataStore;
+    }
+
+    public void ChangeSize(int width, int height)
+    {
+        gridSizeWidth = width;
+        gridSizeHeight = height;
+
+        inventoryItemSlots = new InventoryItem[width, height]; // seconhd part of the array, sets the size.
+        Vector2 size = new Vector2(width * tileSizeWidth, height * tileSizeHeight);
+        rectTransform.sizeDelta = size;
     }
 
     public InventoryItem PickUpItem(int x, int y)
@@ -30,6 +66,18 @@ public class ItemGrid : MonoBehaviour
             return null;
 
         CleanGridReference(toReturn);
+
+        toReturn.Data.LastPosX = null;
+        toReturn.Data.LastPosY = null;
+
+        if (IsAStorageItem)
+        {
+
+            _StorageData.Store_InventoryItemSlots = inventoryItemSlots;
+            _StorageData.Store_ItemDataStore.Remove(toReturn.Data);
+
+        }
+
 
         return toReturn;
     }
@@ -74,6 +122,12 @@ public class ItemGrid : MonoBehaviour
 
     public bool PlaceItem(InventoryItem inventoryItem, int posX, int posY, ref InventoryItem overlapItem)
     {
+        if (IsAStorageItem && (inventoryItem.itemData.ItemType == ItemType.backpack || inventoryItem.itemData.ItemType == ItemType.armor))
+        {
+            print("cannot put storage Items within themselfs");
+            return false;
+        }
+
         if (BoundryCheck(posX, posY, inventoryItem.WIDTH, inventoryItem.HEIGHT) == false)
         {
             return false;
@@ -95,6 +149,46 @@ public class ItemGrid : MonoBehaviour
         return true;
     }
 
+    public void PlaceItemForGeneratingItems(InventoryItem inventoryItem, int posX, int posY)
+    {
+        RectTransform rectTransform = inventoryItem.GetComponent<RectTransform>();
+        rectTransform.SetParent(this.rectTransform);
+
+        for (int x = 0; x < inventoryItem.WIDTH; x++)
+        {
+            for (int y = 0; y < inventoryItem.HEIGHT; y++)
+            {
+                inventoryItemSlots[posX + x, posY + y] = inventoryItem;
+            }
+        }
+
+        inventoryItem.OnGridPositionX = posX;
+        inventoryItem.OnGridPositionY = posY;
+        Vector2 position = CalculatePositionOnGrid(inventoryItem, posX, posY);
+
+        rectTransform.localPosition = position;
+
+        inventoryItem.Data.LastPosX = posX;
+        inventoryItem.Data.LastPosY = posY;
+
+        _StorageData.Store_InventoryItemSlots = inventoryItemSlots;
+        // print(inventoryItem.gameObject.name);
+
+
+        // ! ???? start
+        // int = _StorageData
+        // end
+
+        // if (IsAStorageItem)
+        // {
+        //     _StorageData.Store_ItemDataStore.Add(inventoryItem.Data);
+        //     _StorageData.Store_InventoryItemSlots = inventoryItemSlots;
+        //     // _StorageData.Store_ItemDataStore.Remove(inventoryItem.Data);
+
+        //     // handling resetting the storage data when item is removed.
+        // }
+    }
+
     public void PlaceItem(InventoryItem inventoryItem, int posX, int posY)
     {
         RectTransform rectTransform = inventoryItem.GetComponent<RectTransform>();
@@ -113,6 +207,28 @@ public class ItemGrid : MonoBehaviour
         Vector2 position = CalculatePositionOnGrid(inventoryItem, posX, posY);
 
         rectTransform.localPosition = position;
+
+        inventoryItem.Data.LastPosX = posX;
+        inventoryItem.Data.LastPosY = posY;
+
+        _StorageData.Store_InventoryItemSlots = inventoryItemSlots;
+        // print(inventoryItem.gameObject.name);
+
+
+        // ! ???? start
+        // int = _StorageData
+        // end
+
+        if (IsAStorageItem)
+        {
+            _StorageData.Store_ItemDataStore.Add(inventoryItem.Data);
+            _StorageData.Store_InventoryItemSlots = inventoryItemSlots;
+            // _StorageData.Store_ItemDataStore.Remove(inventoryItem.Data);
+
+            // handling resetting the storage data when item is removed.
+        }
+
+
     }
 
     public Vector2 CalculatePositionOnGrid(InventoryItem inventoryItem, int posX, int posY)

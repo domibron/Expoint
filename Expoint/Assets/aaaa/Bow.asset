@@ -15,3 +15,6 @@ MonoBehaviour:
   width: 3
   height: 2
   itemIcon: {fileID: 21300000, guid: 82257d6098f81764c9474684441a01de, type: 3}
+  ItemType: 2
+  SorageWidth: 6
+  SorageHeight: 4
