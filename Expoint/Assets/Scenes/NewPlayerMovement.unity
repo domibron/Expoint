@@ -8489,6 +8489,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSizeWidth: 20
   gridSizeHeight: 10
+  IsAStorageItem: 0
 --- !u!1 &1302075474006204151
 GameObject:
   m_ObjectHideFlags: 0
@@ -8713,6 +8714,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSizeWidth: 1
   gridSizeHeight: 1
+  IsAStorageItem: 0
 --- !u!114 &4420853320325515285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8836,6 +8838,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSizeWidth: 3
   gridSizeHeight: 2
+  IsAStorageItem: 0
 --- !u!224 &5381199079586802258
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9047,6 +9050,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSizeWidth: 3
   gridSizeHeight: 3
+  IsAStorageItem: 0
 --- !u!224 &7918688677707743664
 RectTransform:
   m_ObjectHideFlags: 0
