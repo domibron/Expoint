@@ -6,7 +6,7 @@ using UnityEngine;
 public class LookController : MonoBehaviour, IMouseInput
 {
 
-    GameObject cam;
+    public GameObject ObjectToRotate;
 
     private float yRotation;
     //private float xRotation;
@@ -16,7 +16,7 @@ public class LookController : MonoBehaviour, IMouseInput
 
     void Awake()
     {
-        cam = Camera.main.gameObject;
+        //ObjectToRotate = Camera.main.gameObject;
     }
 
     void Start()
@@ -36,7 +36,7 @@ public class LookController : MonoBehaviour, IMouseInput
 
 
         transform.Rotate(Vector3.up * mouseX);
-        cam.transform.localRotation = Quaternion.Euler(yRotation, 0, 0);
+        ObjectToRotate.transform.localRotation = Quaternion.Euler(yRotation, 0, 0);
     }
 
 
