@@ -199,7 +199,7 @@ public class InventoryController : MonoBehaviour, IMouseLeftClickPress
 
 	public bool PickUpItemObject(ObjectItemData objectItemData) // me
 	{
-		CreateItemPrefab(objectItemData.itemData);
+		CreateItemPrefab(objectItemData); // objectitemdata not itemdata
 		InventoryItem itemToInsert = selectedItem;
 		selectedItem = null;
 
@@ -209,6 +209,7 @@ public class InventoryController : MonoBehaviour, IMouseLeftClickPress
 		// ! STOP THIS! SAVE HEADACHES! SAVE TIME! CREATE BETTER CODE, CONFUSTION IS BAD!
 		//itemToInsert.storageData = objectItemData.storageData;
 		// ! THIS ONE LINE, ONE LINE CAUSED SO MANY DEBUG ISSUES AND ERRORS, AND ITS THE FIRST LAYER OF MILIONS!
+
 
 
 		bool b = false;
@@ -405,6 +406,35 @@ public class InventoryController : MonoBehaviour, IMouseLeftClickPress
 
 		inventoryItem.Set(itemData);
 		inventoryItem.Data.itemData = inventoryItem.itemData;
+
+		if (inventoryItem.itemData.ItemType == ItemType.backpack || inventoryItem.itemData.ItemType == ItemType.armor)
+		{
+			if (inventoryItem.storageData.Store_ItemDataStore == null)
+			{
+				inventoryItem.storageData.Store_ItemDataStore = new List<ItemDataStore>();
+			}
+
+			if (inventoryItem.storageData.Store_InventoryItemSlots == null)
+			{
+				inventoryItem.storageData.Store_InventoryItemSlots = new InventoryItem[inventoryItem.itemData.SorageWidth, inventoryItem.itemData.SorageHeight];
+			}
+		}
+
+	}
+
+	private void CreateItemPrefab(ObjectItemData objectItemData) // me
+	{
+		InventoryItem inventoryItem = Instantiate(itemPrefab).GetComponent<InventoryItem>();
+		selectedItem = inventoryItem;
+
+		rectTransform = inventoryItem.GetComponent<RectTransform>();
+		rectTransform.SetParent(canvasTransform);
+		rectTransform.SetAsLastSibling();
+
+		inventoryItem.Set(objectItemData.itemData); // sets item data
+		inventoryItem.Data.itemData = inventoryItem.itemData; // sets item data in data
+		inventoryItem.storageData = objectItemData.storageData; // sets storage data
+
 
 		if (inventoryItem.itemData.ItemType == ItemType.backpack || inventoryItem.itemData.ItemType == ItemType.armor)
 		{
