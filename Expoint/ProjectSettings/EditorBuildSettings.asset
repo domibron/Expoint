@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/New System/Main.unity
+    guid: 6e39297d780094c4ca161d4844ea406e
+  - enabled: 1
     path: Assets/Scenes/LoginMenu.unity
     guid: 45dc00eedcc29c54aa53a2bfb9e09cba
   - enabled: 1
@@ -17,9 +20,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Levels/NightClub/NightClub1.unity
     guid: 31e956a43f4f2c94395fd7396fbc50a1
-  - enabled: 1
-    path: Assets/Scenes/New System/Main.unity
-    guid: 6e39297d780094c4ca161d4844ea406e
   - enabled: 1
     path: Assets/Scenes/New System/Menu.unity
     guid: bb04b76081e480041a2b4bab28d88df2
