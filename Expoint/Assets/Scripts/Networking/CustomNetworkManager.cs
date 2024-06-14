@@ -16,9 +16,21 @@ public class CustomNetworkManager : NetworkRoomManager
 		base.OnServerConnect(conn);
 	}
 
-	public void ConnectToIPAdress()
+	public override void OnRoomClientEnter()
 	{
-		string MyAttualIP = "86.10.14.161";
-		NetworkClient.Connect(MyAttualIP);
+		base.OnRoomClientEnter();
+	}
+
+	public override void OnRoomClientExit()
+	{
+		base.OnRoomClientExit();
+	}
+
+	public void UpdatePlayersUI()
+	{
+		foreach (RoomPlayer player in roomSlots)
+		{
+			// update ui but not here
+		}
 	}
 }
