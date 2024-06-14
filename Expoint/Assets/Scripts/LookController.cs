@@ -12,7 +12,7 @@ public class LookController : NetworkBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		if (authority)
+		if (!authority)
 		{
 			Destroy(CameraTransform.gameObject);
 		}
