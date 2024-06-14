@@ -12,16 +12,16 @@ public class LookController : NetworkBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		if (isClient)
+		if (authority)
 		{
-
+			Destroy(CameraTransform.gameObject);
 		}
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (!isClient) return;
+		if (!authority) return;
 
 		Vector2 MouseMoveDirection = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
 

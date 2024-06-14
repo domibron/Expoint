@@ -12,7 +12,7 @@ public class MovementController : NetworkBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		if (isClient)
+		if (authority)
 		{
 			_characterController = GetComponent<CharacterController>();
 
@@ -24,7 +24,7 @@ public class MovementController : NetworkBehaviour
 	void Update()
 	{
 
-		if (!isClient) return;
+		if (!authority) return;
 
 
 
