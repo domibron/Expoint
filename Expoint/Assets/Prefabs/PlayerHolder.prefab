@@ -593,7 +593,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0da9b8d067603aa478c28239931d8f99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   UI: {fileID: 1400236395997896025}
+  EventManager: {fileID: 8503102722063771062}
 --- !u!1 &3008140350383831426
 GameObject:
   m_ObjectHideFlags: 0
@@ -1691,7 +1695,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4132008623253903766}
   - component: {fileID: 4342509280987910586}
-  - component: {fileID: 7047336534065122539}
   m_Layer: 0
   m_Name: PlayerHolder
   m_TagString: Untagged
@@ -1734,18 +1737,3 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &7047336534065122539
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8657226790312699291}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95390efd07fa2924e9d4a0d28b275743, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  RemoveIfNotLocal:
-  - {fileID: 1913959348420167473}
-  - {fileID: 8503102722063771062}

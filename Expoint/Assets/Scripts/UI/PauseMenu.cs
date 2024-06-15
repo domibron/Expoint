@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
 
-public class PauseMenu : MonoBehaviour
+public class PauseMenu : NetworkBehaviour
 {
 	public GameObject UI;
 
@@ -11,10 +11,18 @@ public class PauseMenu : MonoBehaviour
 
 	private bool _paused = false;
 
+	public GameObject EventManager;
+
 	// Start is called before the first frame update
 	void Start()
 	{
 		_networkRoomManager = NetworkManager.singleton as NetworkRoomManager;
+
+		if (!isLocalPlayer)
+		{
+			Destroy(EventManager);
+			Destroy(this.gameObject);
+		}
 	}
 
 	// Update is called once per frame

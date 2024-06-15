@@ -13,7 +13,7 @@ public class RemoveNonlocalStuff : NetworkBehaviour
 	private bool _removedAllItems = false;
 
 	// Start is called before the first frame update
-	void Start()
+	void Awake()
 	{
 		if (isLocalPlayer) return;
 
@@ -22,6 +22,7 @@ public class RemoveNonlocalStuff : NetworkBehaviour
 		for (int i = 0; i < RemoveIfNotLocal.Count; i++)
 		{
 			Destroy(RemoveIfNotLocal[0]);
+			RemoveIfNotLocal.RemoveAt(0);
 		}
 	}
 
