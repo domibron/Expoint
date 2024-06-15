@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
+using System;
 
 public class CustomNetworkManager : NetworkRoomManager
 {
+	public static event Action PlayerListChanged;
+
 	public override void Start()
 	{
 		base.Start();
@@ -19,11 +22,19 @@ public class CustomNetworkManager : NetworkRoomManager
 	public override void OnRoomClientEnter()
 	{
 		base.OnRoomClientEnter();
+
+
+		PlayerListChanged?.Invoke();
+
 	}
 
 	public override void OnRoomClientExit()
 	{
 		base.OnRoomClientExit();
+
+
+		PlayerListChanged?.Invoke();
+
 	}
 
 	public void UpdatePlayersUI()
