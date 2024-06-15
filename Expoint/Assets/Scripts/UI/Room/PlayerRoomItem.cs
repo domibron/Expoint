@@ -16,7 +16,18 @@ public class PlayerRoomItem : MonoBehaviour
 
 	public Button KickButton;
 
+	public Button ReadyButton;
+
+	public TMP_Text ReadyButtonText;
+
+	public bool ReadyVisisble = false;
+
 	public NetworkIdentity NetID;
+
+	public NetworkRoomPlayer Player;
+
+	private bool _isReady = false;
+
 
 	public void SetPlayerRoomItem(string name, bool kickVisible, NetworkIdentity netID)
 	{
@@ -30,12 +41,22 @@ public class PlayerRoomItem : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		KickButton.onClick.AddListener(OnKick);
+		KickButton.onClick.AddListener(Kick);
+
+		ReadyButton.onClick.AddListener(Ready);
 	}
 
-	public void OnKick()
+	public void Kick()
 	{
 		NetID.connectionToClient.Disconnect();
+	}
+
+
+	public void Ready()
+	{
+		_isReady = !_isReady;
+
+		Player.CmdChangeReadyState(_isReady);
 	}
 
 	// Update is called once per frame
@@ -44,5 +65,10 @@ public class PlayerRoomItem : MonoBehaviour
 		NameDisplay.text = Name;
 
 		KickButton.gameObject.SetActive(KickVisible);
+
+		if (ReadyButton.gameObject.activeSelf)
+		{
+			ReadyButtonText.text = (_isReady) ? "UnReady" : "Ready";
+		}
 	}
 }
