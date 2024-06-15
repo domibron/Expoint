@@ -65,7 +65,7 @@ public class RoomPlayerUIManager : NetworkBehaviour
 					playerRoomItem.KickVisible = true;
 				}
 
-				if (item.isClient)
+				if (item.isLocalPlayer)
 				{
 					playerRoomItem.ReadyVisisble = true;
 				}
