@@ -13,16 +13,21 @@ public class PauseMenu : NetworkBehaviour
 
 	public GameObject EventManager;
 
-	// Start is called before the first frame update
-	void Start()
+	void Awake()
 	{
-		_networkRoomManager = NetworkManager.singleton as NetworkRoomManager;
-
 		if (!isLocalPlayer)
 		{
 			Destroy(EventManager);
 			Destroy(this.gameObject);
 		}
+	}
+
+	// Start is called before the first frame update
+	void Start()
+	{
+		_networkRoomManager = NetworkManager.singleton as NetworkRoomManager;
+
+
 	}
 
 	// Update is called once per frame
