@@ -66,6 +66,8 @@ public class PlayerRoomItem : MonoBehaviour
 
 		KickButton.gameObject.SetActive(KickVisible);
 
+		ReadyButton.gameObject.SetActive(ReadyVisisble);
+
 		if (ReadyButton.gameObject.activeSelf)
 		{
 			ReadyButtonText.text = (_isReady) ? "UnReady" : "Ready";
