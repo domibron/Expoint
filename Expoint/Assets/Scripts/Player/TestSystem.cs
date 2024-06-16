@@ -5,13 +5,14 @@ using UnityEngine;
 
 public class TestSystem : NetworkBehaviour
 {
+	[SyncVar]
 	public float Health = 100f;
-
-	public float Maxheath = 100f;
 
 	public Transform CameraTransform;
 
 	private bool _isSetUpCompleate = false;
+
+	public PlayerManager playerManager;
 
 	// Start is called before the first frame update
 	void Start()
@@ -42,6 +43,11 @@ public class TestSystem : NetworkBehaviour
 				CmdTakeDamage(hit.collider.gameObject, 10);
 			}
 		}
+
+		if (Health <= 0)
+		{
+			playerManager.CmdRemovePlayer(this.gameObject);
+		}
 	}
 
 	[TargetRpc]
@@ -50,6 +56,7 @@ public class TestSystem : NetworkBehaviour
 		print($"Taken damage {damage}");
 	}
 
+	[Command]
 	public void CmdTakeDamage(GameObject target, int damage)
 	{
 		target.GetComponent<TestSystem>().Health -= damage;
@@ -61,12 +68,14 @@ public class TestSystem : NetworkBehaviour
 		TargetTakeDamage(netID.connectionToClient, damage);
 	}
 
-	public void SetUp()
+	public void SetUp(PlayerManager pManager)
 	{
 		if (isOwned)
 		{
 			CameraTransform = Camera.main.transform;
 		}
+
+		playerManager = pManager;
 
 		_isSetUpCompleate = true;
 	}
