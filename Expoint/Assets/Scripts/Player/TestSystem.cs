@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class TestSystem : NetworkBehaviour
 {
-	[SyncVar]
 	public float Health = 100f;
 
 	public float Maxheath = 100f;
@@ -32,23 +31,25 @@ public class TestSystem : NetworkBehaviour
 
 				if (hit.collider.GetComponentInParent<NetworkIdentity>() == null) return;
 
-				TakeDamage(hit.collider.GetComponentInParent<NetworkIdentity>().connectionToClient, 10);
+				CmdTakeDamage(hit.collider.gameObject, 10);
 			}
-
 		}
 	}
 
 	[TargetRpc]
-	public void TakeDamage(NetworkConnectionToClient target, float damage)
+	public void TargetTakeDamage(NetworkConnectionToClient target, float damage)
 	{
-		Health -= damage;
+		print($"Taken damage {damage}");
 	}
 
-	public void CmdShoot(GameObject target)
+	public void CmdTakeDamage(GameObject target, int damage)
 	{
-		if (target.GetComponent<TestSystem>() != null)
-		{
-			target.GetComponent<TestSystem>().Health -= 10f;
-		}
+		target.GetComponent<TestSystem>().Health -= damage;
+
+		print($"Delt damage");
+
+		NetworkIdentity netID = target.GetComponentInParent<NetworkIdentity>();
+
+		TargetTakeDamage(netID.connectionToClient, damage);
 	}
 }
