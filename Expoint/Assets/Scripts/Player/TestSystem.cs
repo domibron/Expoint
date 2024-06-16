@@ -54,16 +54,18 @@ public class TestSystem : NetworkBehaviour
 	public void TargetTakeDamage(NetworkConnectionToClient target, float damage)
 	{
 		print($"Taken damage {damage}");
+
+		Health -= damage;
 	}
 
 	[Command]
 	public void CmdTakeDamage(GameObject target, int damage)
 	{
-		target.GetComponent<TestSystem>().Health -= damage;
+
 
 		print($"Delt damage");
 
-		NetworkIdentity netID = target.GetComponentInParent<NetworkIdentity>();
+		NetworkIdentity netID = target.GetComponent<NetworkIdentity>();
 
 		TargetTakeDamage(netID.connectionToClient, damage);
 	}
