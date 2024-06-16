@@ -16,7 +16,7 @@ public class PlayerManager : NetworkBehaviour
 	void Start()
 	{
 		_netManager = NetworkManager.singleton as CustomNetworkManager;
-
+		NetworkClient.RegisterPrefab(PlayerCharacterPrefab);
 		CmdSpawnPlayer(netIdentity.connectionToClient);
 	}
 
