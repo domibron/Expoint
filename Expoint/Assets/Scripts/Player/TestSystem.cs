@@ -61,7 +61,6 @@ public class TestSystem : NetworkBehaviour
 		TargetTakeDamage(netID.connectionToClient, damage);
 	}
 
-	[ClientRpc]
 	public void SetUp()
 	{
 		if (isOwned)
