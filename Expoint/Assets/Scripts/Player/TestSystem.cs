@@ -31,6 +31,12 @@ public class TestSystem : NetworkBehaviour
 
 				if (hit.collider.GetComponentInParent<NetworkIdentity>() == null) return;
 
+				if (hit.collider.tag == "Player")
+				{
+					print("hitting self");
+					return;
+				}
+
 				CmdTakeDamage(hit.collider.gameObject, 10);
 			}
 		}
