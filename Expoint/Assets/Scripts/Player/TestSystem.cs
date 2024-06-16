@@ -11,16 +11,18 @@ public class TestSystem : NetworkBehaviour
 
 	public Transform CameraTransform;
 
+	private bool _isSetUpCompleate = false;
+
 	// Start is called before the first frame update
 	void Start()
 	{
-		if (isLocalPlayer) CameraTransform = Camera.main.transform;
+
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (!isLocalPlayer) return;
+		if (!isOwned || !_isSetUpCompleate) return;
 
 		if (Input.GetKeyDown(KeyCode.Mouse0))
 		{
@@ -57,5 +59,16 @@ public class TestSystem : NetworkBehaviour
 		NetworkIdentity netID = target.GetComponentInParent<NetworkIdentity>();
 
 		TargetTakeDamage(netID.connectionToClient, damage);
+	}
+
+	[ClientRpc]
+	public void SetUp()
+	{
+		if (isOwned)
+		{
+			CameraTransform = Camera.main.transform;
+		}
+
+		_isSetUpCompleate = true;
 	}
 }

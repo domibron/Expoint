@@ -17,22 +17,19 @@ public class MovementController : NetworkBehaviour
 
 	private bool _isGrounded = false;
 
+	private bool _isSetUpComplete = false;
+
 	// Start is called before the first frame update
 	void Start()
 	{
-		if (isLocalPlayer)
-		{
-			_characterController = GetComponent<CharacterController>();
 
-			print("I am client");
-		}
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
 
-		if (!isLocalPlayer) return;
+		if (!isOwned || !_isSetUpComplete) return;
 
 		GroundCheck();
 
@@ -91,5 +88,18 @@ public class MovementController : NetworkBehaviour
 
 			_velocity += jumpDir;
 		}
+	}
+
+	[ClientRpc]
+	public void SetUp()
+	{
+		if (isOwned)
+		{
+			_characterController = GetComponent<CharacterController>();
+
+			print("I am client");
+		}
+
+		_isSetUpComplete = true;
 	}
 }
