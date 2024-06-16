@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TestSystem : NetworkBehaviour
 {
-	[SyncVar]
+	[SyncVar(hook = nameof(OnHealthUpdated))]
 	public float Health = 100f;
 
 	public Transform CameraTransform;
@@ -78,5 +78,10 @@ public class TestSystem : NetworkBehaviour
 		playerManager = pManager;
 
 		_isSetUpCompleate = true;
+	}
+
+	public void OnHealthUpdated(float OldHealth, float NewHealth)
+	{
+		Health = NewHealth;
 	}
 }
