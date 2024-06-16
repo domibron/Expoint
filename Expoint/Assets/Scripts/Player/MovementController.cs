@@ -90,7 +90,6 @@ public class MovementController : NetworkBehaviour
 		}
 	}
 
-	[ClientRpc]
 	public void SetUp()
 	{
 		if (isOwned)
