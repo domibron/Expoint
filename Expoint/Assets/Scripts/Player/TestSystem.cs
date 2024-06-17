@@ -8,6 +8,8 @@ public class TestSystem : NetworkBehaviour
 	[SyncVar(hook = nameof(OnHealthUpdated))]
 	public float Health = 100f;
 
+	public float CurrentHealth = 100f;
+
 	public Transform CameraTransform;
 
 	private bool _isSetUpCompleate = false;
@@ -55,13 +57,13 @@ public class TestSystem : NetworkBehaviour
 	{
 		print($"Taken damage {damage}");
 
-		Health -= damage;
+
 	}
 
 	[Command]
 	public void CmdTakeDamage(GameObject target, int damage)
 	{
-
+		Health -= damage;
 
 		print($"Delt damage");
 
@@ -75,15 +77,20 @@ public class TestSystem : NetworkBehaviour
 		if (isOwned)
 		{
 			CameraTransform = Camera.main.transform;
+
+			transform.tag = "Player";
 		}
 
 		playerManager = pManager;
+
 
 		_isSetUpCompleate = true;
 	}
 
 	public void OnHealthUpdated(float OldHealth, float NewHealth)
 	{
-		Health = NewHealth;
+		CurrentHealth = NewHealth;
+
+		if (Health != NewHealth) Health = NewHealth;
 	}
 }
