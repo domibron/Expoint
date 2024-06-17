@@ -63,7 +63,7 @@ public class TestSystem : NetworkBehaviour
 	[Command]
 	public void CmdTakeDamage(GameObject target, int damage)
 	{
-		Health -= damage;
+		target.GetComponent<TestSystem>().Health -= damage;
 
 		print($"Delt damage");
 
