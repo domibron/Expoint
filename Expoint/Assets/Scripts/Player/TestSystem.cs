@@ -91,6 +91,8 @@ public class TestSystem : NetworkBehaviour
 	{
 		CurrentHealth = NewHealth;
 
-		if (Health != NewHealth) Health = NewHealth;
+		//if (Health != NewHealth) Health = NewHealth;
+
+		print($"{OldHealth} | {NewHealth} / {CurrentHealth}");
 	}
 }
