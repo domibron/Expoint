@@ -60,7 +60,7 @@ public class TestSystem : NetworkBehaviour
 
 	}
 
-	[Command]
+	[Command(requiresAuthority = false)]
 	public void CmdTakeDamage(GameObject target, int damage)
 	{
 		target.GetComponent<TestSystem>().Health -= damage;

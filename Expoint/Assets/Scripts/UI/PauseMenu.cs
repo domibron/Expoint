@@ -9,14 +9,11 @@ public class PauseMenu : NetworkBehaviour
 
 	NetworkRoomManager _networkRoomManager;
 
+	// We cannot stop time, it is a multiplayer game.
 	private bool _paused = false;
 
 	public GameObject EventManager;
 
-	void Awake()
-	{
-
-	}
 
 	// Start is called before the first frame update
 	void Start()
@@ -40,6 +37,8 @@ public class PauseMenu : NetworkBehaviour
 
 
 		UI.SetActive(_paused);
+
+		MouseLockManager.IsLocked = _paused;
 
 	}
 
