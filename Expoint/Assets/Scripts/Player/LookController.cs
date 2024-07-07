@@ -9,19 +9,18 @@ public class LookController : NetworkBehaviour
 
 	float _xRotation;
 
+	private bool _setUpCompleate = false;
+
 	// Start is called before the first frame update
 	void Start()
 	{
-		if (!isLocalPlayer)
-		{
-			Destroy(CameraTransform.gameObject);
-		}
+
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (!isLocalPlayer) return;
+		if (!isOwned || !_setUpCompleate) return;
 
 		Vector2 MouseMoveDirection = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
 
@@ -32,5 +31,16 @@ public class LookController : NetworkBehaviour
 		CameraTransform.rotation = Quaternion.Euler(_xRotation, CameraTransform.rotation.eulerAngles.y, CameraTransform.rotation.eulerAngles.z);
 
 		transform.Rotate(0, MouseMoveDirection.x, 0);
+	}
+
+
+	public void SetUp()
+	{
+		if (!isOwned)
+		{
+			Destroy(CameraTransform.gameObject);
+		}
+
+		_setUpCompleate = true;
 	}
 }
