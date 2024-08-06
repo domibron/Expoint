@@ -19,4 +19,4 @@ https://domibron.itch.io/expoint
 
 
 
-&copy; 2022 Dominic McNeill, domibron
+&copy; 2022 to current - Dominic McNeill, domibron
